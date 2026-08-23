@@ -1,0 +1,73 @@
+name: Work Item
+description: Crear una unidad de trabajo estandarizada para el proyecto
+title: "[TYPE] "
+labels: ["triage"]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Tipo
+      options:
+        - Issue
+        - Backlog
+        - Feature
+        - Experiment
+        - Bug
+        - TechDebt
+        - Research
+        - Task
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridad
+      options:
+        - P0
+        - P1
+        - P2
+        - P3
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Estado
+      options:
+        - Todo
+        - InProgress
+        - Blocked
+        - Review
+        - Done
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Resumen
+      placeholder: Describe el objetivo del issue.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance
+      placeholder: Qué sí / qué no incluye.
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencias
+      placeholder: "Ejemplo: bloqueado por #12, depende de #8"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Criterios de aceptación
+      placeholder: Lista verificable de resultados esperados.
+    validations:
+      required: true
