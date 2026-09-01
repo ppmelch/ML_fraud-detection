@@ -18,6 +18,8 @@ over, not absorbed.
 | `data-engineer` | pipeline stages, contracts, provenance | what a signal means; training |
 | `quant-researcher` | whether a signal is real, and at what horizon | implementing models; building stages |
 | `ml-engineer` | training and evaluation mechanics | deciding the research question |
+| `backend-engineer` | `backend/src/` modules and the JSON artifacts the page reads | HTML, CSS, or JS; evaluation honesty |
+| `frontend-engineer` | `frontend/` — markup, styling, Leaflet map, Plotly charts | computing any number; editing `backend/` |
 | `code-reviewer` | architectural integrity | implementing the fix |
 | `git-workflow` | branch-to-merge lifecycle | judging code content |
 
