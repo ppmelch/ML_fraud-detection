@@ -1,0 +1,11 @@
+{
+  "geojson_path": "/mnt/c/Users/ppmel/Documentos/ITESO 9no Semestre/Lab. Desarrollo de Soluciones Tecnológicas/ML_fraud-detection/frontend/data/us-states.json",
+  "geojson_features": 52,
+  "dataset_states": 52,
+  "matched_states": 52,
+  "unmatched_dataset_states": [],
+  "geojson_states_without_data": [],
+  "duplicate_states": [],
+  "renames_applied": {},
+  "ok": true
+}

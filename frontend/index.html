@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>US Anomaly Detection Analytics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&display=swap"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
+    <section class="hero-section">
+
+
+        <!-- NAVBAR -->
+
+        <header class="navbar">
+
+            <div class="logo">
+
+                <span class="logo-line"></span>
+
+                <h1>US Anomaly Analytics</h1>
+
+            </div>
+
+
+            <nav class="nav-links">
+
+                <a href="#overview">Overview</a>
+                <a href="#anomaly-analysis">Anomaly Analysis</a>
+                <a href="#us-map">US Map</a>
+                <a href="#model-diagnostics">Model Diagnostics</a>
+
+            </nav>
+
+
+            <div class="nav-actions">
+
+                <form class="search-box" role="search">
+
+                    <input
+                        type="text"
+                        placeholder="Search a state…"
+                        aria-label="Search states"
+                        list="state-list"
+                        autocomplete="off"
+                    >
+
+                    <datalist id="state-list"></datalist>
+
+                    <button
+                        type="button"
+                        class="search-btn"
+                        aria-label="Search states"
+                        title="Search states"
+                    ></button>
+
+                </form>
+
+
+                <button
+                    class="location-btn"
+                    type="button"
+                    title="Reset map view — fit all states and clear selection"
+                >
+                    Reset view
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- HERO CONTENT -->
+
+        <div class="hero-content">
+
+            <h1>
+                US ANOMALY DETECTION:
+                <br>
+                GEOSPATIAL ANALYTICS
+            </h1>
+
+            <p>
+                Unsupervised machine-learning anomaly detection over US bank
+                transactions, with state-level geographic analytics.
+            </p>
+
+            <a href="#overview" class="explore-link">
+                <button type="button" class="btn-primary">
+                    Explore Results
+                </button>
+            </a>
+
+        </div>
+
+
+        <!-- STATE PROFILE CARD (hover / click) -->
+
+        <div id="state-card">
+
+            <button
+                class="state-close"
+                id="state-close-btn"
+                title="Clear selection"
+            >
+                &times;
+            </button>
+
+            <span class="state-card-kicker" id="state-card-kicker">
+                Hover a state
+            </span>
+
+            <h2 id="state-name">
+            </h2>
+
+            <div class="state-info" id="state-info">
+            </div>
+
+        </div>
+
+
+        <!-- ANOMALY RATE LEGEND -->
+
+        <div id="map-legend">
+
+            <h4>Anomaly Rate by State</h4>
+
+            <div class="legend-scale"></div>
+
+            <div class="legend-labels">
+                <span id="legend-min">Low</span>
+                <span id="legend-mid">—</span>
+                <span id="legend-max">High</span>
+            </div>
+
+            <p class="legend-note">
+                Color reflects each state's share of transactions the model
+                flagged as anomalous, relative to the others. Hover or click a
+                state for its full profile.
+            </p>
+
+        </div>
+
+
+        <!-- MAP -->
+
+        <div id="map" role="img" aria-label="US anomaly rate map by state"></div>
+
+        <div id="map-status">
+            <div class="status-box">
+                <div class="spinner"></div>
+                <div id="map-status-text">Loading US anomaly map…</div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section" id="us-map">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         OVERVIEW
+    ========================== -->
+    <section class="charts-section" id="overview">
+
+        <div class="section-tag"><span>Overview</span></div>
+
+        <h1>
+            Anomaly Overview
+        </h1>
+
+        <h2>
+            Portfolio-wide metrics, computed by the backend from the observed transactions
+        </h2>
+
+        <div class="section-status" id="overview-status"></div>
+
+        <div class="kpi-grid" id="overview-kpi-grid">
+
+            <div class="kpi-card">
+                <h3>Total Transactions</h3>
+                <p id="kpi-total-transactions">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Accounts</h3>
+                <p id="kpi-accounts">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Flagged Transactions</h3>
+                <p id="kpi-flagged">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Flagged Rate</h3>
+                <p id="kpi-flagged-rate">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Mean Anomaly Score</h3>
+                <p id="kpi-mean-score">—</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         ANOMALY ANALYSIS
+    ========================== -->
+    <section class="charts-section" id="anomaly-analysis">
+
+        <div class="section-tag"><span>Anomaly Analysis</span></div>
+
+        <h1>
+            Anomaly Patterns
+        </h1>
+
+        <h2>
+            Where and when the model's flags concentrate across the dataset
+        </h2>
+
+        <div class="section-status" id="anomaly-analysis-status"></div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-score-distribution">
+                <h2>Anomaly Score Distribution</h2>
+                <div id="score-distribution" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-amount-distribution">
+                <h2>Transaction Amount Distribution</h2>
+                <div id="amount-distribution" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-rate-hour">
+                <h2>Anomaly Rate by Hour of Day</h2>
+                <div id="rate-by-hour" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-rate-day">
+                <h2>Anomaly Rate by Day of Week</h2>
+                <div id="rate-by-day" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-rate-channel">
+                <h2>Anomaly Rate by Channel</h2>
+                <div id="rate-by-channel" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-rate-type">
+                <h2>Anomaly Rate by Transaction Type</h2>
+                <div id="rate-by-type" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+        <div class="chart-row" style="grid-template-columns: 1fr;">
+
+            <div class="chart-card" id="card-rate-occupation">
+                <h2>Anomaly Rate by Customer Occupation</h2>
+                <div id="rate-by-occupation" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         MODEL DIAGNOSTICS
+    ========================== -->
+    <section class="charts-section" id="model-diagnostics">
+
+        <div class="section-tag"><span>Model Diagnostics</span></div>
+
+        <h1>
+            Model Diagnostics
+        </h1>
+
+        <h2>
+            Held-out test window — unsupervised anomaly scores, no fraud label to score against
+        </h2>
+
+        <div class="section-status" id="model-status"></div>
+
+        <div class="caveat-banner" id="model-caveat-banner" style="display:none;">
+            <span class="caveat-icon">⚠</span>
+            <p id="model-caveat-text"></p>
+        </div>
+
+        <div class="kpi-grid" id="model-kpi-grid">
+
+            <div class="kpi-card">
+                <h3>Model</h3>
+                <p id="kpi-model-name">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Flag Threshold</h3>
+                <p id="kpi-threshold">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Contamination</h3>
+                <p id="kpi-contamination">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Test Flagged Rate</h3>
+                <p id="kpi-test-flagged-rate">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Test Score p95</h3>
+                <p id="kpi-test-p95">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Test Score p99</h3>
+                <p id="kpi-test-p99">—</p>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-score-histogram">
+                <h2>Anomaly Score Distribution — Train vs Test</h2>
+                <div id="score-histogram" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-score-rank">
+                <h2>Score-Rank Curve — Test</h2>
+                <div id="score-rank" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-feature-contrast">
+                <h2>Feature Contrast — Flagged vs Normal</h2>
+                <div id="feature-contrast" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-importance">
+                <h2>Feature Importance (SHAP / Permutation)</h2>
+                <div id="feature-importance" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row" style="grid-template-columns: 1fr;">
+
+            <div class="chart-card" id="card-top-anomalies">
+                <h2>Top 25 Anomalies — Test</h2>
+                <div id="top-anomalies" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+                <p class="diagnostics-note" id="diagnostics-note"></p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="footer">
+
+        <div class="footer-right">
+
+            <p>
+                Built by Mapachitas Team
+            </p>
+
+            <span>
+                © 2026 Mapachitas. All rights reserved.
+            </span>
+
+        </div>
+
+    </footer>
+
+    <script src="js/app.js"></script>
+
+
+</body>
+
+</html>
