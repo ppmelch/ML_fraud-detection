@@ -1,0 +1,316 @@
+{
+  "method": "shap_tree_explainer",
+  "sample_size": 560,
+  "model_name": "isolation_forest",
+  "feature_importance": [
+    {
+      "feature": "Month",
+      "importance": 0.1469368630746597,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_Texas",
+      "importance": 0.14281752959126073,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "TransactionType_Debit",
+      "importance": 0.12972139589976514,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Amount_Dev_Account",
+      "importance": 0.11344136517850777,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_California",
+      "importance": 0.11304713256407128,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "CustomerOccupation_Student",
+      "importance": 0.09108801067668114,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "CustomerOccupation_Retired",
+      "importance": 0.0845167229444717,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "CustomerOccupation_Engineer",
+      "importance": 0.08300421744991508,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_Frequency",
+      "importance": 0.08275139303918638,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_Arizona",
+      "importance": 0.08063184329857119,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Account_Txn_Count",
+      "importance": 0.07961597893263492,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Channel_Branch",
+      "importance": 0.07684035989989442,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Is_Night",
+      "importance": 0.06599493588955244,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_Florida",
+      "importance": 0.06237082998074889,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Amount_Dev_MerchantID",
+      "importance": 0.05928615677676881,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_Colorado",
+      "importance": 0.05613444268955735,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Log_Account_Balance",
+      "importance": 0.05466615812039188,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Hour",
+      "importance": 0.05249541438265909,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Amount_Dev_Hour",
+      "importance": 0.052440506162302655,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "TransactionAmount",
+      "importance": 0.05226330827850481,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "DeviceID_Frequency",
+      "importance": 0.05091221794339718,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Balance_After_Transaction",
+      "importance": 0.050502711360049954,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "USState_North Carolina",
+      "importance": 0.04945121238297198,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Log_Transaction_Amount",
+      "importance": 0.049387018613248845,
+      "method": "shap_mean_abs"
+    },
+    {
+      "feature": "Is_Weekend",
+      "importance": 0.049046881464688254,
+      "method": "shap_mean_abs"
+    }
+  ],
+  "feature_impact": [
+    {
+      "feature": "Month",
+      "mean_abs_impact": 0.14693686307465975,
+      "mean_signed_impact": -0.1469368630746597,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.7576561345185019
+    },
+    {
+      "feature": "USState_Texas",
+      "mean_abs_impact": 0.1428175295912609,
+      "mean_signed_impact": 0.0018278349294662635,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9990924962482249
+    },
+    {
+      "feature": "TransactionType_Debit",
+      "mean_abs_impact": 0.12972139589976525,
+      "mean_signed_impact": -0.006755892926673758,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": 0.9969171448018345
+    },
+    {
+      "feature": "Amount_Dev_Account",
+      "mean_abs_impact": 0.11344136517850775,
+      "mean_signed_impact": -0.07063914833167179,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.36351148438074987
+    },
+    {
+      "feature": "USState_California",
+      "mean_abs_impact": 0.11304713256407124,
+      "mean_signed_impact": 0.008056631122091686,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9991401373995613
+    },
+    {
+      "feature": "CustomerOccupation_Student",
+      "mean_abs_impact": 0.09108801067668118,
+      "mean_signed_impact": 0.005262534996981302,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9875767268601499
+    },
+    {
+      "feature": "CustomerOccupation_Retired",
+      "mean_abs_impact": 0.08451672294447171,
+      "mean_signed_impact": 0.005588799904190621,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9933533958402173
+    },
+    {
+      "feature": "CustomerOccupation_Engineer",
+      "mean_abs_impact": 0.08300421744991515,
+      "mean_signed_impact": -0.00821098595231275,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.9944249380885718
+    },
+    {
+      "feature": "USState_Frequency",
+      "mean_abs_impact": 0.08275139303918644,
+      "mean_signed_impact": -0.0022656448049553765,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.918673276282901
+    },
+    {
+      "feature": "USState_Arizona",
+      "mean_abs_impact": 0.08063184329857122,
+      "mean_signed_impact": -0.019548992443302136,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.9990371411120984
+    },
+    {
+      "feature": "Account_Txn_Count",
+      "mean_abs_impact": 0.07961597893263493,
+      "mean_signed_impact": -0.07192350934647096,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": 0.9286519613428309
+    },
+    {
+      "feature": "Channel_Branch",
+      "mean_abs_impact": 0.07684035989989435,
+      "mean_signed_impact": -0.007942906438203853,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.9920827065238853
+    },
+    {
+      "feature": "Is_Night",
+      "mean_abs_impact": 0.06599493588955235,
+      "mean_signed_impact": -0.004235935424348836,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.9975306328157959
+    },
+    {
+      "feature": "USState_Florida",
+      "mean_abs_impact": 0.06237082998074894,
+      "mean_signed_impact": 0.012488563159743433,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9986739683699087
+    },
+    {
+      "feature": "Amount_Dev_MerchantID",
+      "mean_abs_impact": 0.059286156776768795,
+      "mean_signed_impact": -0.0193870885064996,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.7779172985518251
+    },
+    {
+      "feature": "USState_Colorado",
+      "mean_abs_impact": 0.05613444268955736,
+      "mean_signed_impact": -0.009743540923701994,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.9983223089648168
+    },
+    {
+      "feature": "Log_Account_Balance",
+      "mean_abs_impact": 0.05466615812039192,
+      "mean_signed_impact": 0.005272548088996221,
+      "direction": "increases_anomaly_score",
+      "value_correlation": 0.789928624563603
+    },
+    {
+      "feature": "Hour",
+      "mean_abs_impact": 0.05249541438265907,
+      "mean_signed_impact": -0.0008729892759459371,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": 0.8507148015148448
+    },
+    {
+      "feature": "Amount_Dev_Hour",
+      "mean_abs_impact": 0.05244050616230263,
+      "mean_signed_impact": -0.00970686572081573,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.899591868144168
+    },
+    {
+      "feature": "TransactionAmount",
+      "mean_abs_impact": 0.052263308278504825,
+      "mean_signed_impact": -0.011287863675082202,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.8646690083620542
+    },
+    {
+      "feature": "DeviceID_Frequency",
+      "mean_abs_impact": 0.0509122179433972,
+      "mean_signed_impact": -0.018549824475448347,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": 0.43991393480334195
+    },
+    {
+      "feature": "Balance_After_Transaction",
+      "mean_abs_impact": 0.05050271136004991,
+      "mean_signed_impact": -0.003626247383131629,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": -0.7786148004656382
+    },
+    {
+      "feature": "USState_North Carolina",
+      "mean_abs_impact": 0.049451212382971954,
+      "mean_signed_impact": 0.014782716960115311,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9995010081816433
+    },
+    {
+      "feature": "Log_Transaction_Amount",
+      "mean_abs_impact": 0.04938701861324887,
+      "mean_signed_impact": -0.0079026961108299,
+      "direction": "decreases_anomaly_score",
+      "value_correlation": 0.4494056558278077
+    },
+    {
+      "feature": "Is_Weekend",
+      "mean_abs_impact": 0.04904688146468828,
+      "mean_signed_impact": 0.0030316774868861984,
+      "direction": "increases_anomaly_score",
+      "value_correlation": -0.9979831238984107
+    }
+  ],
+  "score_summary": {
+    "mean": 0.4228697110879087,
+    "p95": 0.745523872036438,
+    "p99": 0.9574399401275113,
+    "flagged_rate": 0.06785714285714285
+  },
+  "caveat": "This dataset has no fraud label. Feature importance describes which inputs move the model's anomaly score, not which inputs cause fraud. Read the ranking as 'what the model reacts to', and corroborate any flagged transaction with independent review."
+}

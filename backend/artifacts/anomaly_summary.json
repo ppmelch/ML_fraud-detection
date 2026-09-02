@@ -1,0 +1,460 @@
+{
+  "overview": {
+    "total_transactions": 3293,
+    "total_accounts": 654,
+    "total_amount": 981758.06,
+    "avg_transaction_amount": 298.1348496811418,
+    "avg_account_balance": 5145.784020649864,
+    "states_covered": 52,
+    "flagged_transactions": 108,
+    "flagged_rate": 0.03279684178560583,
+    "mean_anomaly_score": 0.3847465595464567,
+    "flagged_amount": 93262.77,
+    "period_start": "2023-01-02T16:00:06",
+    "period_end": "2024-01-01T18:21:50"
+  },
+  "by_hour": [
+    {
+      "bucket": 0,
+      "total_transactions": 29,
+      "flagged": 2,
+      "anomaly_rate": 0.06896551724137931,
+      "mean_score": 0.5678606106815696
+    },
+    {
+      "bucket": 1,
+      "total_transactions": 34,
+      "flagged": 9,
+      "anomaly_rate": 0.2647058823529412,
+      "mean_score": 0.5943721330028566
+    },
+    {
+      "bucket": 2,
+      "total_transactions": 26,
+      "flagged": 4,
+      "anomaly_rate": 0.15384615384615385,
+      "mean_score": 0.556563604160399
+    },
+    {
+      "bucket": 3,
+      "total_transactions": 29,
+      "flagged": 5,
+      "anomaly_rate": 0.1724137931034483,
+      "mean_score": 0.6046658616751209
+    },
+    {
+      "bucket": 4,
+      "total_transactions": 33,
+      "flagged": 9,
+      "anomaly_rate": 0.2727272727272727,
+      "mean_score": 0.6443640903688911
+    },
+    {
+      "bucket": 5,
+      "total_transactions": 37,
+      "flagged": 3,
+      "anomaly_rate": 0.08108108108108109,
+      "mean_score": 0.5595472408188971
+    },
+    {
+      "bucket": 6,
+      "total_transactions": 37,
+      "flagged": 1,
+      "anomaly_rate": 0.02702702702702703,
+      "mean_score": 0.4285076731154022
+    },
+    {
+      "bucket": 7,
+      "total_transactions": 35,
+      "flagged": 2,
+      "anomaly_rate": 0.05714285714285714,
+      "mean_score": 0.47939285735010273
+    },
+    {
+      "bucket": 8,
+      "total_transactions": 28,
+      "flagged": 1,
+      "anomaly_rate": 0.03571428571428571,
+      "mean_score": 0.4258755016675
+    },
+    {
+      "bucket": 9,
+      "total_transactions": 30,
+      "flagged": 3,
+      "anomaly_rate": 0.1,
+      "mean_score": 0.43709121553329006
+    },
+    {
+      "bucket": 10,
+      "total_transactions": 29,
+      "flagged": 1,
+      "anomaly_rate": 0.034482758620689655,
+      "mean_score": 0.4259556487676674
+    },
+    {
+      "bucket": 11,
+      "total_transactions": 31,
+      "flagged": 2,
+      "anomaly_rate": 0.06451612903225806,
+      "mean_score": 0.4001943714316488
+    },
+    {
+      "bucket": 12,
+      "total_transactions": 40,
+      "flagged": 1,
+      "anomaly_rate": 0.025,
+      "mean_score": 0.3919669054578444
+    },
+    {
+      "bucket": 13,
+      "total_transactions": 37,
+      "flagged": 0,
+      "anomaly_rate": 0.0,
+      "mean_score": 0.3789184027814032
+    },
+    {
+      "bucket": 14,
+      "total_transactions": 35,
+      "flagged": 1,
+      "anomaly_rate": 0.02857142857142857,
+      "mean_score": 0.36060473738274307
+    },
+    {
+      "bucket": 15,
+      "total_transactions": 43,
+      "flagged": 2,
+      "anomaly_rate": 0.046511627906976744,
+      "mean_score": 0.3925044445253832
+    },
+    {
+      "bucket": 16,
+      "total_transactions": 1342,
+      "flagged": 28,
+      "anomaly_rate": 0.020864381520119227,
+      "mean_score": 0.36411838997484514
+    },
+    {
+      "bucket": 17,
+      "total_transactions": 861,
+      "flagged": 16,
+      "anomaly_rate": 0.018583042973286876,
+      "mean_score": 0.3582152961020562
+    },
+    {
+      "bucket": 18,
+      "total_transactions": 401,
+      "flagged": 10,
+      "anomaly_rate": 0.02493765586034913,
+      "mean_score": 0.37747518275569264
+    },
+    {
+      "bucket": 19,
+      "total_transactions": 30,
+      "flagged": 2,
+      "anomaly_rate": 0.06666666666666667,
+      "mean_score": 0.42930189995286017
+    },
+    {
+      "bucket": 20,
+      "total_transactions": 27,
+      "flagged": 2,
+      "anomaly_rate": 0.07407407407407407,
+      "mean_score": 0.40945073951105226
+    },
+    {
+      "bucket": 21,
+      "total_transactions": 37,
+      "flagged": 1,
+      "anomaly_rate": 0.02702702702702703,
+      "mean_score": 0.43313935775508006
+    },
+    {
+      "bucket": 22,
+      "total_transactions": 27,
+      "flagged": 2,
+      "anomaly_rate": 0.07407407407407407,
+      "mean_score": 0.42886964360340263
+    },
+    {
+      "bucket": 23,
+      "total_transactions": 35,
+      "flagged": 1,
+      "anomaly_rate": 0.02857142857142857,
+      "mean_score": 0.42045385178770156
+    }
+  ],
+  "by_day_of_week": [
+    {
+      "bucket": "Monday",
+      "total_transactions": 1191,
+      "flagged": 26,
+      "anomaly_rate": 0.0218303946263644,
+      "mean_score": 0.3651862821577126
+    },
+    {
+      "bucket": "Tuesday",
+      "total_transactions": 476,
+      "flagged": 7,
+      "anomaly_rate": 0.014705882352941176,
+      "mean_score": 0.3696887104441724
+    },
+    {
+      "bucket": "Wednesday",
+      "total_transactions": 466,
+      "flagged": 14,
+      "anomaly_rate": 0.030042918454935622,
+      "mean_score": 0.37898215112201766
+    },
+    {
+      "bucket": "Thursday",
+      "total_transactions": 484,
+      "flagged": 8,
+      "anomaly_rate": 0.01652892561983471,
+      "mean_score": 0.36920459361111374
+    },
+    {
+      "bucket": "Friday",
+      "total_transactions": 462,
+      "flagged": 15,
+      "anomaly_rate": 0.032467532467532464,
+      "mean_score": 0.3939412046585373
+    },
+    {
+      "bucket": "Saturday",
+      "total_transactions": 118,
+      "flagged": 20,
+      "anomaly_rate": 0.1694915254237288,
+      "mean_score": 0.5422483840878068
+    },
+    {
+      "bucket": "Sunday",
+      "total_transactions": 96,
+      "flagged": 18,
+      "anomaly_rate": 0.1875,
+      "mean_score": 0.5705716745830772
+    }
+  ],
+  "by_channel": [
+    {
+      "category": "Branch",
+      "total_transactions": 1143,
+      "flagged": 44,
+      "anomaly_rate": 0.03849518810148731,
+      "mean_score": 0.39996763356778703
+    },
+    {
+      "category": "Online",
+      "total_transactions": 1062,
+      "flagged": 39,
+      "anomaly_rate": 0.03672316384180791,
+      "mean_score": 0.40744193405080226
+    },
+    {
+      "category": "ATM",
+      "total_transactions": 1088,
+      "flagged": 25,
+      "anomaly_rate": 0.02297794117647059,
+      "mean_score": 0.3466030160446224
+    }
+  ],
+  "by_transaction_type": [
+    {
+      "category": "Credit",
+      "total_transactions": 751,
+      "flagged": 45,
+      "anomaly_rate": 0.05992010652463382,
+      "mean_score": 0.4561019901947918
+    },
+    {
+      "category": "Debit",
+      "total_transactions": 2542,
+      "flagged": 63,
+      "anomaly_rate": 0.024783634933123525,
+      "mean_score": 0.3636655491542853
+    }
+  ],
+  "by_occupation": [
+    {
+      "category": "Student",
+      "total_transactions": 847,
+      "flagged": 50,
+      "anomaly_rate": 0.0590318772136954,
+      "mean_score": 0.42245937102281533
+    },
+    {
+      "category": "Engineer",
+      "total_transactions": 821,
+      "flagged": 20,
+      "anomaly_rate": 0.024360535931790498,
+      "mean_score": 0.3714091602497493
+    },
+    {
+      "category": "Retired",
+      "total_transactions": 790,
+      "flagged": 19,
+      "anomaly_rate": 0.024050632911392405,
+      "mean_score": 0.37714064002364345
+    },
+    {
+      "category": "Doctor",
+      "total_transactions": 835,
+      "flagged": 19,
+      "anomaly_rate": 0.022754491017964073,
+      "mean_score": 0.3668015654448321
+    }
+  ],
+  "amount_distribution": {
+    "bin_centers": [
+      48.23125,
+      144.17374999999998,
+      240.11624999999998,
+      336.05875,
+      432.00124999999997,
+      527.9437499999999,
+      623.88625,
+      719.8287499999999,
+      815.77125,
+      911.7137499999999,
+      1007.6562499999999,
+      1103.5987499999999,
+      1199.54125,
+      1295.4837499999999,
+      1391.42625,
+      1487.3687499999999,
+      1583.31125,
+      1679.2537499999999,
+      1775.19625,
+      1871.1387499999998
+    ],
+    "normal_counts": [
+      916,
+      614,
+      457,
+      375,
+      238,
+      172,
+      130,
+      92,
+      69,
+      41,
+      28,
+      18,
+      13,
+      7,
+      8,
+      4,
+      1,
+      0,
+      0,
+      2
+    ],
+    "flagged_counts": [
+      13,
+      7,
+      3,
+      5,
+      3,
+      2,
+      5,
+      3,
+      8,
+      9,
+      4,
+      8,
+      12,
+      2,
+      10,
+      3,
+      2,
+      6,
+      2,
+      1
+    ]
+  },
+  "score_distribution": {
+    "bin_centers": [
+      0.0125,
+      0.037500000000000006,
+      0.0625,
+      0.08750000000000001,
+      0.1125,
+      0.1375,
+      0.16250000000000003,
+      0.1875,
+      0.21250000000000002,
+      0.2375,
+      0.2625,
+      0.28750000000000003,
+      0.3125,
+      0.3375,
+      0.36250000000000004,
+      0.3875,
+      0.41250000000000003,
+      0.4375,
+      0.4625,
+      0.48750000000000004,
+      0.5125,
+      0.5375000000000001,
+      0.5625,
+      0.5875000000000001,
+      0.6125,
+      0.6375,
+      0.6625000000000001,
+      0.6875,
+      0.7125000000000001,
+      0.7375,
+      0.7625,
+      0.7875000000000001,
+      0.8125,
+      0.8375000000000001,
+      0.8625,
+      0.8875,
+      0.9125000000000001,
+      0.9375,
+      0.9625000000000001,
+      0.9875
+    ],
+    "counts": [
+      2,
+      1,
+      1,
+      1,
+      6,
+      15,
+      34,
+      93,
+      153,
+      187,
+      247,
+      268,
+      261,
+      263,
+      272,
+      242,
+      223,
+      169,
+      134,
+      117,
+      100,
+      94,
+      59,
+      73,
+      61,
+      40,
+      38,
+      23,
+      22,
+      23,
+      12,
+      12,
+      15,
+      5,
+      6,
+      4,
+      6,
+      1,
+      6,
+      4
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+# The live suite lives in tests/. legacy/pre-unsupervised/ holds a frozen
+# snapshot of the old supervised codebase (its tests share basenames with the
+# live ones, which breaks collection) — never collect it.
+testpaths = ["tests"]
+norecursedirs = ["legacy", ".git", ".venv", "backend/artifacts", "backend/src/models"]
+addopts = "-q"

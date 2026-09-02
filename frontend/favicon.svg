@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="US Anomaly Analytics">
+    <rect width="32" height="32" rx="7" fill="#0E1320"/>
+    <rect x="5" y="19" width="4" height="7" rx="1" fill="#47679B"/>
+    <rect x="12" y="15" width="4" height="11" rx="1" fill="#C9A24B"/>
+    <rect x="19" y="11" width="4" height="15" rx="1" fill="#47679B"/>
+    <rect x="26" y="5" width="4" height="21" rx="1" fill="#9E3B32"/>
+</svg>

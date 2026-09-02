@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>India Fraud Detection Analytics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400..700&display=swap"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" type="image/svg+xml" href="India.svg">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet/dist/leaflet.css"
+    />
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
+    <section class="hero-section">
+
+
+        <!-- NAVBAR -->
+
+        <header class="navbar">
+
+            <div class="logo">
+
+                <span class="logo-line"></span>
+
+                <h1>India Fraud Analytics</h1>
+
+            </div>
+
+
+            <nav class="nav-links">
+
+                <a href="#overview">Overview</a>
+                <a href="#fraud-analysis">Fraud Analysis</a>
+                <a href="#india-map">India Map</a>
+                <a href="#model-performance">Model Performance</a>
+
+            </nav>
+
+
+            <div class="nav-actions">
+
+                <form class="search-box" role="search">
+
+                    <input
+                        type="text"
+                        placeholder="Search a state…"
+                        aria-label="Search states"
+                        list="state-list"
+                        autocomplete="off"
+                    >
+
+                    <datalist id="state-list"></datalist>
+
+                    <button
+                        type="button"
+                        class="search-btn"
+                        aria-label="Search states"
+                        title="Search states"
+                    ></button>
+
+                </form>
+
+
+                <button
+                    class="location-btn"
+                    type="button"
+                    title="Reset map view — fit all states and clear selection"
+                >
+                    Reset view
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- HERO CONTENT -->
+
+        <div class="hero-content">
+
+            <h1>
+                INDIA FRAUD DETECTION:
+                <br>
+                GEOSPATIAL ANALYTICS
+            </h1>
+
+            <p>
+                Machine learning driven transaction fraud
+                detection and state-level geographic analytics platform.
+            </p>
+
+            <a href="#overview" class="explore-link">
+                <button type="button" class="btn-primary">
+                    Explore Results
+                </button>
+            </a>
+
+        </div>
+
+
+        <!-- STATE PROFILE CARD (hover / click) -->
+
+        <div id="state-card">
+
+            <button
+                class="state-close"
+                id="state-close-btn"
+                title="Clear selection"
+            >
+                &times;
+            </button>
+
+            <span class="state-card-kicker" id="state-card-kicker">
+                Hover a state
+            </span>
+
+            <h2 id="state-name">
+            </h2>
+
+            <div class="state-info" id="state-info">
+            </div>
+
+        </div>
+
+
+        <!-- FRAUD RATE LEGEND -->
+
+        <div id="map-legend">
+
+            <h4>Fraud Rate by State</h4>
+
+            <div class="legend-scale"></div>
+
+            <div class="legend-labels">
+                <span id="legend-min">Low</span>
+                <span id="legend-mid">—</span>
+                <span id="legend-max">High</span>
+            </div>
+
+            <p class="legend-note">
+                Color reflects each state's observed fraud rate
+                relative to the others. Hover or click a state
+                for its full profile.
+            </p>
+
+        </div>
+
+
+        <!-- MAP -->
+
+        <div id="map" role="img" aria-label="India fraud rate map by state"></div>
+
+        <div id="map-status">
+            <div class="status-box">
+                <div class="spinner"></div>
+                <div id="map-status-text">Loading India fraud map…</div>
+            </div>
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section" id="india-map">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         OVERVIEW
+    ========================== -->
+    <section class="charts-section" id="overview">
+
+        <div class="section-tag"><span>Overview</span></div>
+
+        <h1>
+            Fraud Overview
+        </h1>
+
+        <h2>
+            Portfolio-wide metrics, computed from the observed transactions
+        </h2>
+
+        <div class="section-status" id="overview-status"></div>
+
+        <div class="kpi-grid" id="overview-kpi-grid">
+
+            <div class="kpi-card">
+                <h3>Total Transactions</h3>
+                <p id="kpi-total-transactions">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Fraud Cases</h3>
+                <p id="kpi-fraud-cases">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Fraud Rate</h3>
+                <p id="kpi-fraud-rate">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Test ROC-AUC</h3>
+                <p id="kpi-roc-auc">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Test PR-AUC</h3>
+                <p id="kpi-pr-auc">—</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         FRAUD ANALYSIS
+    ========================== -->
+    <section class="charts-section" id="fraud-analysis">
+
+        <div class="section-tag"><span>Fraud Analysis</span></div>
+
+        <h1>
+            Fraud Patterns
+        </h1>
+
+        <h2>
+            Where and when fraud concentrates across the dataset
+        </h2>
+
+        <div class="section-status" id="fraud-analysis-status"></div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-fraud-split">
+                <h2>Fraud vs Legitimate Transactions</h2>
+                <div id="fraud-split" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-fraud-amount">
+                <h2>Transaction Amount Distribution</h2>
+                <div id="fraud-amount-distribution" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-fraud-hour">
+                <h2>Fraud Rate by Hour of Day</h2>
+                <div id="fraud-by-hour" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-fraud-day">
+                <h2>Fraud Rate by Day of Week</h2>
+                <div id="fraud-by-day" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-fraud-merchant">
+                <h2>Fraud Rate by Merchant Category</h2>
+                <div id="fraud-by-merchant" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-fraud-device">
+                <h2>Fraud Rate by Device Type</h2>
+                <div id="fraud-by-device" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <selection class="divider-section">
+        <div class="divider"></div>
+    </selection>
+
+
+    <!-- =========================
+         MODEL PERFORMANCE
+    ========================== -->
+    <section class="charts-section" id="model-performance">
+
+        <div class="section-tag"><span>Model Performance</span></div>
+
+        <h1>
+            Model Performance
+        </h1>
+
+        <h2>
+            Held-out test window — imbalanced fraud target, PR-AUC over accuracy
+        </h2>
+
+        <div class="section-status" id="model-status"></div>
+
+        <div class="caveat-banner" id="model-caveat-banner" style="display:none;">
+            <span class="caveat-icon">⚠</span>
+            <p id="model-caveat-text"></p>
+        </div>
+
+        <div class="kpi-grid" id="model-kpi-grid">
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Test ROC-AUC</h3>
+                <p id="kpi-model-roc-auc">—</p>
+            </div>
+
+            <div class="kpi-card kpi-highlight">
+                <h3>Test PR-AUC</h3>
+                <p id="kpi-model-pr-auc">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Precision (Fraud)</h3>
+                <p id="kpi-model-precision">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>Recall (Fraud)</h3>
+                <p id="kpi-model-recall">—</p>
+            </div>
+
+            <div class="kpi-card">
+                <h3>F1-score (Fraud)</h3>
+                <p id="kpi-model-f1">—</p>
+            </div>
+
+            <div class="kpi-card kpi-secondary">
+                <h3>Accuracy (not primary)</h3>
+                <p id="kpi-model-accuracy">—</p>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-roc">
+                <h2>ROC Curve — Test</h2>
+                <div id="roc-test" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-pr">
+                <h2>Precision-Recall Curve — Test</h2>
+                <div id="pr-test" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row">
+
+            <div class="chart-card" id="card-cm">
+                <h2>Confusion Matrix — Test</h2>
+                <div id="cm-test" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+            <div class="chart-card" id="card-density">
+                <h2>Predicted Probability Density — Test</h2>
+                <div id="density-test" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+
+        <div class="chart-row" style="grid-template-columns: 1fr;">
+
+            <div class="chart-card" id="card-importance">
+                <h2>Feature Importance (SHAP)</h2>
+                <div id="feature-importance" class="chart-target"></div>
+                <div class="chart-placeholder"></div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="footer">
+
+        <div class="footer-right">
+
+            <p>
+                Built by Mapachitas Team
+            </p>
+
+            <span>
+                © 2026 Mapachitas. All rights reserved.
+            </span>
+
+        </div>
+
+    </footer>
+
+    <script src="js/app.js"></script>
+
+
+</body>
+
+</html>

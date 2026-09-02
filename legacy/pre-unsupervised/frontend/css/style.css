@@ -1,0 +1,1696 @@
+/* =========================
+   DESIGN TOKENS
+   India Fraud Analytics palette — flag saffron / green / chakra navy,
+   plus warm supporting tones (marigold, terracotta, peacock teal) on a
+   very dark warm charcoal UI base. Every hardcoded colour below and the
+   Plotly / Leaflet colours in js/app.js resolve back to these.
+========================= */
+
+:root {
+
+    /* Core flag palette */
+    --saffron: #FF9933;          /* primary accent / CTAs */
+    --saffron-deep: #E67A1E;     /* CTA hover / pressed */
+    --india-green: #138808;      /* positive / legitimate */
+    --india-green-bright: #1FA80F;
+    --chakra-navy: #000080;      /* deepest secondary */
+    --chakra-blue: #1A3C8C;      /* links, secondary, map hover */
+    --chakra-blue-light: #3E67C8;
+
+    /* Danger / fraud */
+    --crimson: #C1272D;          /* fraud / danger (replaces old dark red) */
+    --crimson-deep: #8E1B1F;
+    --crimson-soft: #F0A9AB;
+
+    /* Warm supporting tones */
+    --marigold: #F6B21B;
+    --marigold-pale: #FBE3B0;
+    --terracotta: #B85C38;
+    --peacock: #0A6E7C;
+
+    /* Warm dark UI base + light "paper" */
+    --ink: #17130F;              /* app background, darkest */
+    --ink-2: #241C15;
+    --ink-3: #322619;
+    --panel: #2B2019;            /* cards / panels */
+    --paper: #F6EFE3;            /* warm near-white text */
+    --paper-dim: rgba(246, 239, 227, 0.72);
+    --paper-faint: rgba(246, 239, 227, 0.5);
+
+    /* Choropleth ramp: pale marigold -> saffron -> deep crimson */
+    --ramp-low: #FBE3B0;
+    --ramp-mid: #FF9933;
+    --ramp-high: #C1272D;
+
+    /* Typography */
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+
+/* =========================
+   GLOBAL STYLES
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background: var(--saffron);
+    color: var(--ink);
+}
+
+::-moz-selection {
+    background: var(--saffron);
+    color: var(--ink);
+}
+
+html,
+body {
+
+    width: 100%;
+    min-height: 100%;
+
+    overflow-x: hidden;
+
+    font-family: var(--font-body);
+
+    color: var(--paper);
+
+    background:
+        linear-gradient(
+            270deg,
+            var(--ink),
+            var(--ink-3),
+            var(--ink-2)
+        );
+
+    background-size: 400% 400%;
+
+    animation:
+        gradient 12s ease infinite;
+}
+
+
+@keyframes gradient {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero-section {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+.hero-content button,
+.hero-content a {
+    pointer-events: auto;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    padding: 18px 45px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    z-index: 999;
+
+    backdrop-filter: blur(12px);
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+
+.logo {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    cursor: pointer;
+}
+
+
+.logo-line {
+
+    width: 4px;
+
+    height: 34px;
+
+    background: var(--saffron);
+
+    border-radius: 10px;
+
+    transition: 0.3s;
+}
+
+
+.logo h1 {
+
+    position: relative;
+
+    color: var(--paper);
+
+    font-family: var(--font-display);
+
+    font-size: 22px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.01em;
+
+    transition: 0.3s;
+}
+
+
+/* HOVER */
+
+.logo:hover h1 {
+
+    color: var(--saffron);
+}
+
+
+.logo:hover .logo-line {
+
+    background: #ffffff;
+}
+
+
+/* UNDERLINE */
+
+.logo h1::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -6px;
+
+    width: 100%;
+
+    height: 3px;
+
+    background: var(--saffron);
+
+    transform: scaleX(0);
+
+    transform-origin: left;
+
+    transition: transform 0.35s ease;
+}
+
+
+.logo:hover h1::after {
+
+    transform: scaleX(1);
+}
+/* =========================
+   NAV LINKS
+========================= */
+
+.nav-links {
+
+    display: flex;
+
+    gap: 40px;
+}
+
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: var(--paper);
+
+    font-size: 16px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.01em;
+
+    position: relative;
+
+    padding-bottom: 10px;
+
+    transition: 0.3s;
+}
+
+
+/* RED LINE */
+
+.nav-links a::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: #ffffff;
+
+    transform: scaleX(0);
+
+    transform-origin: left;
+
+    transition: transform 0.35s ease;
+}
+
+
+/* GREEN LINE */
+
+.nav-links a::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -5px;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--saffron);
+
+    transform: scaleX(0);
+
+    transform-origin: left;
+
+    transition: transform 0.45s ease;
+}
+
+
+.nav-links a:hover::after,
+.nav-links a:hover::before {
+
+    transform: scaleX(1);
+}
+
+
+.nav-links a:hover {
+
+    color: var(--saffron);
+}
+
+
+/* =========================
+   NAV ACTIONS
+========================= */
+
+.nav-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+/* =========================
+   BUTTON SYSTEM
+   primary = saffron fill, secondary = saffron outline.
+   Shared hover / active / focus-visible behaviour, 44px min hit area.
+========================= */
+
+.btn-primary,
+.location-btn {
+
+    font-family: var(--font-body);
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.02em;
+
+    min-height: 44px;
+
+    cursor: pointer;
+
+    border-radius: 12px;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.btn-primary:focus-visible,
+.location-btn:focus-visible,
+.search-box input:focus-visible,
+.search-box .search-btn:focus-visible,
+.state-close:focus-visible,
+.nav-links a:focus-visible {
+
+    outline: 3px solid var(--chakra-blue-light);
+
+    outline-offset: 3px;
+}
+
+
+/* PRIMARY — saffron fill, dark ink label */
+
+.btn-primary {
+
+    padding: 14px 30px;
+
+    border: none;
+
+    background: var(--saffron);
+
+    color: var(--ink);
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+
+.btn-primary:hover {
+
+    background: var(--saffron-deep);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+}
+
+
+.btn-primary:active {
+
+    transform: translateY(0);
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+/* SECONDARY — saffron outline, fills on hover */
+
+.location-btn {
+
+    padding: 10px 18px;
+
+    border: 2px solid var(--saffron);
+
+    background: transparent;
+
+    color: var(--saffron);
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+.location-btn::before {
+
+    content: "\2302";          /* house glyph — "reset / home" affordance */
+
+    font-size: 15px;
+
+    line-height: 1;
+}
+
+
+.location-btn:hover {
+
+    background: var(--saffron);
+
+    color: var(--ink);
+}
+
+
+.location-btn:active {
+
+    background: var(--saffron-deep);
+
+    border-color: var(--saffron-deep);
+}
+
+
+/* =========================
+   HERO CONTENT
+========================= */
+
+.hero-content {
+
+    position: absolute;
+
+    top: 52%;
+
+    left: 60px;
+
+    transform: translateY(-50%);
+
+    max-width: 600px;
+
+    pointer-events: none;
+}
+
+
+.hero-content h1,
+.hero-content p,
+.hero-content button,
+.hero-content a {
+
+    pointer-events: auto;
+}
+
+
+.hero-content h1 {
+
+    font-family: var(--font-display);
+
+    font-size: clamp(2.75rem, 5.6vw, 5rem);
+
+    line-height: 1.04;
+
+    letter-spacing: -0.015em;
+
+    color: var(--paper);
+
+    font-weight: 600;
+
+    margin-bottom: 28px;
+
+    text-shadow:
+        0 2px 20px rgba(0, 0, 0, 0.55),
+        0 0 3px rgba(0, 0, 0, 0.6);
+}
+
+
+
+.hero-content p {
+
+    font-size: clamp(1rem, 1.4vw, 1.35rem);
+
+    line-height: 1.6;
+
+    letter-spacing: 0.005em;
+
+    color: var(--paper-dim);
+
+    margin-bottom: 35px;
+
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Hero CTA is the button system's primary, scaled up for the hero. */
+
+.hero-content .btn-primary {
+
+    padding: 18px 42px;
+
+    border-radius: 16px;
+
+    font-size: 17px;
+}
+
+
+.hero-content .btn-primary:hover {
+
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* =========================
+   HERO CONTENT SCROLL EFFECT
+========================= */
+
+.hero-content {
+
+    position: relative;
+
+    top: 52%;
+
+    left: 60px;
+
+    transform: translateY(-50%);
+
+    z-index:  9999;
+
+    max-width: 600px;
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+}
+
+
+
+/* =========================
+   MAP
+========================= */
+
+#map {
+
+    position: absolute;
+
+    top: 60px;
+    left: 30px;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 1;
+}
+
+
+.leaflet-container {
+
+    background: transparent !important;
+}
+
+
+.leaflet-interactive {
+
+    filter:
+        drop-shadow(
+            0 0 6px rgba(255,255,255,0.08)
+        );
+}
+
+/* =========================
+   MUNICIPALITY CARD
+========================= */
+
+#state-card {
+
+    position: fixed;
+
+    top: 200px;
+
+    right: 220px;
+
+    width: 320px;
+
+    padding: 24px;
+
+    border-radius: 24px;
+
+    background:
+        rgba(247, 240, 229, 0.82);
+
+    backdrop-filter: blur(20px);
+
+    border:
+        1px solid rgba(255,255,255,0.35);
+
+    color: var(--ink);
+
+    z-index: 999;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform:
+        translateY(20px);
+
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease,
+        visibility 0.35s;
+}
+
+
+/* SHOW CARD */
+
+#state-card.active {
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translateY(0);
+}
+
+
+#state-name {
+
+    font-family: var(--font-display);
+
+    font-size: 27px;
+
+    font-weight: 600;
+
+    letter-spacing: -0.01em;
+
+    margin-bottom: 20px;
+
+    color: var(--crimson-deep);
+}
+
+
+.state-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.state-info p {
+
+    font-size: 15px;
+
+    color: rgba(23, 19, 15, 0.82);
+}
+
+
+.state-info span {
+
+    color: var(--peacock);
+
+    font-weight: 700;
+
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================
+    CHARTS 
+========================= */
+.charts-section h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.6vw, 4.25rem);
+    color: var(--saffron);
+    margin-bottom: 12px;
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-transform: none;
+}
+
+.charts-section h2 {
+    font-size: clamp(1rem, 1.4vw, 1.3rem);
+    color: var(--paper-dim);
+    margin-bottom: 70px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+}
+
+
+.charts-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(500px, 1fr));
+
+    gap: 40px;
+
+    padding: 80px;
+}
+
+
+.chart-card {
+
+    background:
+        rgba(255,255,255,0.05);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(16px);
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    min-height: 500px;
+}
+
+
+.chart-card h2 {
+
+    color: white;
+
+    margin-bottom: 20px;
+
+    font-size: 24px;
+}
+
+
+.charts-section {
+    width: 100%;
+    padding: 80px;
+}
+
+
+.chart-card {
+    background: var(--panel);
+    border: 1px solid rgba(246, 239, 227, 0.1);
+    backdrop-filter: blur(14px);
+    border-radius: 24px;
+    padding: 25px;
+    min-height: 650px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.chart-card h2 {
+    font-family: var(--font-display);
+    color: var(--paper);
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: stretch;
+}
+
+
+.js-plotly-plot,
+.plot-container {
+    width: 100% !important;
+}
+
+
+.kpi-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 28px;
+
+    margin-bottom: 10px;
+}
+
+
+.kpi-card {
+
+    background: var(--panel);
+
+    border: 1px solid rgba(246, 239, 227, 0.1);
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    backdrop-filter: blur(14px);
+
+    transition: 0.3s ease;
+
+    text-align: center;
+}
+
+
+.kpi-card:hover {
+
+    transform: translateY(-6px);
+
+    border-color: rgba(255, 153, 51, 0.4);
+}
+
+
+.kpi-card h3 {
+
+    color: var(--paper-dim);
+
+    font-size: 16px;
+
+    margin-bottom: 18px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.01em;
+}
+
+
+.kpi-card p {
+
+    color: var(--paper);
+
+    font-size: clamp(2rem, 3vw, 2.75rem);
+
+    font-weight: 700;
+
+    letter-spacing: -0.02em;
+
+    font-variant-numeric: tabular-nums;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 180px;
+
+    padding: 60px 80px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        rgba(0,0,0,0.25);
+
+    backdrop-filter: blur(12px);
+
+    border-top:
+        1px solid rgba(255,255,255,0.08);
+
+    color: white;
+
+    z-index: 50;
+}
+
+
+.footer-right {
+
+    text-align: center;
+}
+
+
+.footer-right p {
+
+    line-height: 1.7;
+
+    margin-bottom: 14px;
+
+    color:
+        rgba(255,255,255,0.75);
+}
+
+
+.footer-right span {
+
+    color:
+        rgba(255,255,255,0.45);
+
+    font-size: 14px;
+}
+
+
+.divider {
+
+    width: 100%;
+
+    height: 2px;
+
+    background:
+        rgba(246, 239, 227, 0.14);
+
+    margin: 40px 0;
+}
+
+
+/* =========================
+   NAVBAR STATE SEARCH
+   Collapsed pill that expands on focus; the trailing button is a real
+   icon button — magnifier when empty, "x" clear when the field has text.
+========================= */
+
+.search-box {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    width: 46px;
+
+    height: 46px;
+
+    border: 2px solid var(--saffron);
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+    transition: width 0.4s ease, border-color 0.2s ease;
+
+    background: rgba(246, 239, 227, 0.06);
+}
+
+
+.search-box:hover {
+
+    border-color: var(--saffron-deep);
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: var(--paper);
+
+    font-family: var(--font-body);
+
+    font-size: 15px;
+
+    padding: 0 44px 0 18px;
+
+    opacity: 0;
+
+    transition: opacity 0.3s ease;
+
+    cursor: pointer;
+}
+
+
+.search-box input::placeholder {
+
+    color: var(--paper-faint);
+}
+
+
+/* OPEN — on focus, or whenever there is a query to keep visible */
+
+.search-box:focus-within,
+.search-box.has-text {
+
+    width: 260px;
+}
+
+
+.search-box:focus-within input,
+.search-box.has-text input {
+
+    opacity: 1;
+
+    cursor: text;
+}
+
+
+/* ICON BUTTON (glyph set from app.js: magnifier / clear) */
+
+.search-box .search-btn {
+
+    position: absolute;
+
+    top: 50%;
+
+    right: 6px;
+
+    transform: translateY(-50%);
+
+    width: 34px;
+
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: var(--saffron);
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+
+.search-box .search-btn::before {
+
+    content: "\2315";          /* magnifier — replaced with "x" via .has-text */
+}
+
+
+.search-box.has-text .search-btn::before {
+
+    content: "\00d7";
+}
+
+
+.search-box .search-btn:hover {
+
+    background: var(--saffron);
+
+    color: var(--ink);
+}
+
+
+/* No match feedback */
+
+.search-box.no-match {
+
+    border-color: var(--crimson);
+
+    animation: search-shake 0.3s ease;
+}
+
+
+@keyframes search-shake {
+
+    25% { transform: translateX(-3px); }
+
+    75% { transform: translateX(3px); }
+}
+
+
+/* =========================
+   FRAUD RATE LEGEND
+========================= */
+
+#map-legend {
+
+    position: fixed;
+
+    left: 30px;
+    bottom: 40px;
+
+    width: 260px;
+
+    padding: 20px 22px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(247, 240, 229, 0.82);
+
+    backdrop-filter: blur(20px);
+
+    border:
+        1px solid rgba(255,255,255,0.35);
+
+    color: var(--ink);
+
+    z-index: 998;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s;
+}
+
+
+/* Both #state-card and #map-legend are fixed to the viewport so they track
+   the hero's map while hovering. Past the hero they must not float on top
+   of the sections below. */
+#state-card.scroll-hidden,
+#map-legend.scroll-hidden {
+
+    opacity: 0 !important;
+
+    visibility: hidden !important;
+
+    pointer-events: none;
+}
+
+
+#map-legend h4 {
+
+    font-size: 13px;
+
+    color: var(--ink);
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+}
+
+
+.legend-scale {
+
+    width: 100%;
+
+    height: 14px;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        90deg,
+        var(--ramp-low),
+        var(--ramp-mid),
+        var(--ramp-high)
+    );
+
+    margin-bottom: 8px;
+}
+
+
+.legend-labels {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 12px;
+
+    color: rgba(23, 19, 15, 0.75);
+
+    font-variant-numeric: tabular-nums;
+}
+
+
+.legend-note {
+
+    margin-top: 10px;
+
+    font-size: 11px;
+
+    color: rgba(23, 19, 15, 0.62);
+
+    line-height: 1.5;
+}
+
+
+.legend-swatch {
+
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 3px;
+
+    margin-right: 6px;
+}
+
+
+/* =========================
+   STATE CARD: SELECTED / PINNED
+========================= */
+
+#state-card.pinned {
+
+    border: 1px solid var(--saffron);
+
+    box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.22);
+}
+
+
+#state-card .state-card-kicker {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+
+    text-transform: uppercase;
+
+    color: rgba(23, 19, 15, 0.55);
+
+    margin-bottom: 6px;
+}
+
+
+#state-card .state-close {
+
+    position: absolute;
+
+    top: 18px;
+    right: 18px;
+
+    width: 26px;
+    height: 26px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(23, 19, 15, 0.1);
+
+    color: var(--crimson-deep);
+
+    font-size: 15px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+#state-card.pinned .state-close {
+
+    display: flex;
+}
+
+
+#state-card .no-fraud-data {
+
+    font-size: 15px;
+
+    color: rgba(23, 19, 15, 0.65);
+
+    font-style: italic;
+}
+
+
+/* =========================
+   MAP LOADING / ERROR OVERLAY
+========================= */
+
+#map-status {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 500;
+
+    pointer-events: none;
+}
+
+
+#map-status .status-box {
+
+    padding: 22px 32px;
+
+    border-radius: 18px;
+
+    background: rgba(20,20,20,0.55);
+
+    backdrop-filter: blur(10px);
+
+    color: white;
+
+    font-size: 16px;
+
+    text-align: center;
+
+    max-width: 420px;
+}
+
+
+#map-status.hidden {
+
+    display: none;
+}
+
+
+#map-status .status-box.error {
+
+    border: 1px solid rgba(193, 39, 45, 0.7);
+
+    color: var(--crimson-soft);
+}
+
+
+.spinner {
+
+    width: 34px;
+    height: 34px;
+
+    margin: 0 auto 14px;
+
+    border: 3px solid rgba(255,255,255,0.2);
+
+    border-top-color: #ffffff;
+
+    border-radius: 50%;
+
+    animation: spin 0.9s linear infinite;
+}
+
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* =========================
+   SECTION-LEVEL LOADING / ERROR / EMPTY
+========================= */
+
+.section-status {
+
+    padding: 26px 30px;
+
+    border-radius: 18px;
+
+    background: rgba(193, 39, 45, 0.14);
+
+    border: 1px solid rgba(193, 39, 45, 0.35);
+
+    color: var(--crimson-soft);
+
+    font-size: 15px;
+
+    margin-bottom: 40px;
+
+    display: none;
+}
+
+
+.section-status.visible {
+
+    display: block;
+}
+
+
+.section-status.loading {
+
+    background: rgba(246, 239, 227, 0.06);
+
+    border: 1px solid rgba(246, 239, 227, 0.1);
+
+    color: var(--paper-dim);
+}
+
+
+.chart-card.is-loading .chart-placeholder,
+.chart-card.is-error .chart-placeholder {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    height: 100%;
+
+    min-height: 400px;
+
+    color: var(--paper-faint);
+
+    font-size: 14px;
+
+    text-align: center;
+
+    padding: 20px;
+}
+
+
+.chart-card .chart-placeholder {
+
+    display: none;
+}
+
+
+.chart-card.is-error .chart-placeholder {
+
+    color: var(--crimson-soft);
+}
+
+
+/* =========================
+   MODEL GENERALIZATION CAVEAT BANNER
+========================= */
+
+.caveat-banner {
+
+    display: flex;
+
+    gap: 16px;
+
+    align-items: flex-start;
+
+    padding: 22px 26px;
+
+    border-radius: 20px;
+
+    background: rgba(193, 39, 45, 0.14);
+
+    border: 1px solid rgba(193, 39, 45, 0.35);
+
+    margin-bottom: 50px;
+}
+
+
+.caveat-banner .caveat-icon {
+
+    font-size: 26px;
+
+    line-height: 1;
+}
+
+
+.caveat-banner p {
+
+    color: var(--paper-dim);
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+
+.caveat-banner strong {
+
+    color: var(--crimson-soft);
+}
+
+
+.caveat-banner.ok {
+
+    background: rgba(19, 136, 8, 0.12);
+
+    border: 1px solid rgba(19, 136, 8, 0.35);
+}
+
+
+.caveat-banner.ok strong {
+
+    color: var(--india-green-bright);
+}
+
+
+/* =========================
+   KPI SECONDARY VARIANT (de-emphasized, e.g. Accuracy)
+========================= */
+
+.kpi-card.kpi-secondary {
+
+    opacity: 0.6;
+}
+
+
+.kpi-card.kpi-secondary p {
+
+    font-size: clamp(1.5rem, 2vw, 1.9rem);
+
+    color: var(--paper-faint);
+}
+
+
+.kpi-card.kpi-highlight {
+
+    border-color: rgba(255, 153, 51, 0.35);
+}
+
+
+.kpi-card.kpi-highlight p {
+
+    color: var(--saffron);
+}
+
+
+/* =========================
+   SECTION SUBTITLE TAG
+========================= */
+
+.section-tag {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+}
+
+
+.section-tag span {
+
+    padding: 4px 12px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 153, 51, 0.16);
+
+    color: var(--saffron);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1300px) {
+
+    /* Smaller, narrower hero title leaves the map more breathing room at
+       tablet widths, where it would otherwise fight the title for space. */
+    .hero-content {
+        max-width: 420px;
+    }
+
+    /* Pull the state card in and narrow it so it clears the (still
+       left-aligned) hero title instead of overlapping it. */
+    #state-card {
+        right: 40px;
+        width: 300px;
+    }
+}
+
+
+@media (max-width: 1100px) {
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* Below this, the hero title has shrunk enough (see the 640px tier) that
+   the state card can safely go full-width without overlapping it. */
+@media (max-width: 820px) {
+
+    #state-card {
+        right: 20px;
+        left: 20px;
+        width: auto;
+    }
+
+    #map-legend {
+        left: 20px;
+        right: 20px;
+        width: auto;
+    }
+}
+
+
+/* Below this the map (see getMapFitPadding in app.js) uses near-full-bleed
+   padding and necessarily sits under the hero title's vertical band — keep
+   the title legible over whatever state color lands behind it rather than
+   fighting the map for space. */
+@media (max-width: 900px) {
+
+    .hero-content h1 {
+        text-shadow:
+            0 2px 14px rgba(0,0,0,0.6),
+            0 0 4px rgba(0,0,0,0.85);
+    }
+
+    .hero-content p {
+        text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+    }
+}
+
+
+@media (max-width: 640px) {
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
