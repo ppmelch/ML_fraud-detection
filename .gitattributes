@@ -1,0 +1,9 @@
+# Normalise line endings to LF for all text files (repo was mixing CRLF/LF
+# via the Windows/WSL filesystem). Keeps diffs clean across machines.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.svg text eol=lf
+*.csv text eol=lf
+*.json text eol=lf
