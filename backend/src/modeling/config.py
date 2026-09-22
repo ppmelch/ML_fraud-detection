@@ -219,6 +219,12 @@ MODEL_CONFIG = {
 # Rows sampled for SHAP / permutation importance.
 SHAP_SAMPLE_SIZE = 1000
 
+# Seeds for the multi-run stability analysis: how much does the flagged set
+# change when a randomized estimator (isolation_forest, autoencoder) is
+# refit on the same training window under a different seed. LOF has no
+# random_state and is reported as not applicable rather than re-run.
+STABILITY_SEEDS = list(range(RANDOM_STATE, RANDOM_STATE + 10))
+
 
 # ---------------------------------------------------------------------------
 # Analytics guards

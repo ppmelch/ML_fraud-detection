@@ -154,6 +154,17 @@ def model_explainability() -> dict:
     return _artifact_or_503(artifacts.get_explainability, "Explainability")
 
 
+@app.get("/api/model/stability", tags=["model"])
+def model_stability() -> dict:
+    """
+    Multi-seed stability of the served detector: per-seed run stats, pairwise
+    Jaccard similarity of the flagged sets, per-transaction flag consistency
+    and the stable-anomaly rate by state. Returns ``applicable: false`` when
+    the served model has no ``random_state`` (e.g. LOF) and was not re-run.
+    """
+    return _artifact_or_503(artifacts.get_stability_analysis, "Stability analysis")
+
+
 @app.post("/api/predict", response_model=PredictionResponse, tags=["model"])
 def predict(transaction: TransactionInput) -> PredictionResponse:
     """

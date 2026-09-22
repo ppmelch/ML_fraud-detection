@@ -97,8 +97,8 @@ class AnomalyPipeline:
             :class:`AnomalyEvaluation`, the test entry also carrying
             ``score_rank_curve``, ``top_anomalies``, ``feature_contrast`` and
             ``heuristic_alignment``), ``feature_columns``, and — held for
-            downstream interpretability without re-deriving — ``X_test``,
-            ``data_test`` and ``test_scores``.
+            downstream interpretability without re-deriving — ``X_train``,
+            ``X_test``, ``data_test`` and ``test_scores``.
         """
         data = self.loader.load()
 
@@ -163,6 +163,7 @@ class AnomalyPipeline:
             "contamination": self.contamination,
             "metrics": metrics,
             "feature_columns": list(self.data_preparation.feature_columns_),
+            "X_train": X_train,
             "X_test": X_test,
             "data_test": test_enriched,
             "test_scores": test_scores,

@@ -1,0 +1,16 @@
+rank,feature,importance,method
+1,Month,0.1469368630746597,shap_mean_abs
+2,USState_Texas,0.14281752959126073,shap_mean_abs
+3,TransactionType_Debit,0.12972139589976514,shap_mean_abs
+4,Amount_Dev_Account,0.11344136517850777,shap_mean_abs
+5,USState_California,0.11304713256407128,shap_mean_abs
+6,CustomerOccupation_Student,0.09108801067668114,shap_mean_abs
+7,CustomerOccupation_Retired,0.0845167229444717,shap_mean_abs
+8,CustomerOccupation_Engineer,0.08300421744991508,shap_mean_abs
+9,USState_Frequency,0.08275139303918638,shap_mean_abs
+10,USState_Arizona,0.08063184329857119,shap_mean_abs
+11,Account_Txn_Count,0.07961597893263492,shap_mean_abs
+12,Channel_Branch,0.07684035989989442,shap_mean_abs
+13,Is_Night,0.06599493588955244,shap_mean_abs
+14,USState_Florida,0.06237082998074889,shap_mean_abs
+15,Amount_Dev_MerchantID,0.05928615677676881,shap_mean_abs

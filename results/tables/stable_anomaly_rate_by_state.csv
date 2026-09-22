@@ -1,0 +1,52 @@
+state,n_test_transactions,stable_flagged,stable_anomaly_rate,low_support
+Connecticut,4,1,0.25,True
+Kansas,4,1,0.25,True
+Maine,4,1,0.25,True
+Minnesota,9,2,0.2222222222222222,True
+Rhode Island,5,1,0.2,True
+Arkansas,6,1,0.16666666666666666,True
+Louisiana,7,1,0.14285714285714285,True
+Nevada,8,1,0.125,True
+Utah,8,1,0.125,True
+District of Columbia,9,1,0.1111111111111111,True
+West Virginia,9,1,0.1111111111111111,True
+Tennessee,13,1,0.07692307692307693,True
+Missouri,14,1,0.07142857142857142,True
+Florida,17,1,0.058823529411764705,False
+New Jersey,17,1,0.058823529411764705,False
+Alabama,12,0,0.0,True
+Alaska,1,0,0.0,True
+Arizona,43,0,0.0,False
+California,54,0,0.0,False
+Colorado,27,0,0.0,False
+Delaware,2,0,0.0,True
+Georgia,9,0,0.0,True
+Hawaii,3,0,0.0,True
+Idaho,4,0,0.0,True
+Illinois,8,0,0.0,True
+Indiana,8,0,0.0,True
+Iowa,2,0,0.0,True
+Kentucky,11,0,0.0,True
+Maryland,8,0,0.0,True
+Massachusetts,7,0,0.0,True
+Michigan,12,0,0.0,True
+Mississippi,6,0,0.0,True
+Montana,4,0,0.0,True
+Nebraska,17,0,0.0,False
+New Hampshire,1,0,0.0,True
+New Mexico,9,0,0.0,True
+New York,10,0,0.0,True
+North Carolina,13,0,0.0,True
+Ohio,13,0,0.0,True
+Oklahoma,7,0,0.0,True
+Oregon,6,0,0.0,True
+Pennsylvania,11,0,0.0,True
+Puerto Rico,9,0,0.0,True
+South Carolina,8,0,0.0,True
+South Dakota,2,0,0.0,True
+Texas,61,0,0.0,False
+Vermont,5,0,0.0,True
+Virginia,9,0,0.0,True
+Washington,13,0,0.0,True
+Wisconsin,10,0,0.0,True
+Wyoming,1,0,0.0,True

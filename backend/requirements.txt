@@ -17,3 +17,7 @@ pydantic==2.13.5
 # Testing
 pytest==7.4.3
 httpx==0.28.1
+
+# Static publication-quality figures (scripts/generate_figures.py)
+matplotlib==3.11.2
+seaborn==0.13.2

@@ -138,6 +138,22 @@ def get_geo_validation() -> dict:
 
 
 @lru_cache(maxsize=1)
+def get_stability_analysis() -> dict:
+    """
+    Load the multi-seed stability analysis artifact.
+
+    Returns
+    -------
+    dict
+        Per-seed run stats, pairwise Jaccard similarity, per-transaction
+        flag consistency and the stable-anomaly rate by state. Carries
+        ``applicable: false`` instead when the served model (e.g. LOF) has
+        no ``random_state`` and was not re-run.
+    """
+    return _read_json(ARTIFACTS_DIR / "stability_analysis.json")
+
+
+@lru_cache(maxsize=1)
 def get_geojson() -> dict:
     """
     Load the US state boundaries GeoJSON.
@@ -164,6 +180,7 @@ def clear_cache() -> None:
         get_anomaly_summary,
         get_state_metrics,
         get_geo_validation,
+        get_stability_analysis,
         get_geojson,
     ):
         fn.cache_clear()
