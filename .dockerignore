@@ -1,0 +1,26 @@
+# Keep the Docker build context small and avoid shipping stale bytecode or
+# host-only files into images.
+
+.git
+.github
+.vscode
+.venv
+venv/
+env/
+**/__pycache__/
+**/*.pyc
+.pytest_cache
+.coverage
+htmlcov/
+
+# Not needed inside either image: training data (backend only reads
+# precomputed artifacts + the saved model bundle) and docs.
+data/
+docs/
+legacy/
+tests/
+
+# Local env files must never be baked into an image.
+.env
+.env.*
+!.env.example

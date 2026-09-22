@@ -9,6 +9,7 @@ This is the one place that turns the raw CSV into everything downstream::
             -> AnomalyExplainer (SHAP / permutation feature importance)
             -> TransactionAnalytics (portfolio anomaly analytics, full dataset)
             -> StateAnalytics + StateGeoMapper (per-state metrics, GeoJSON join)
+            -> StabilityAnalyzer (multi-seed refit, Jaccard, per-row stability)
             -> backend/artifacts/*.json  +  backend/src/models/anomaly_model.pkl
 
 The API layer only reads these files; it never recomputes them. Re-run this
@@ -31,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from backend.src.data.data_loader import TransactionDataLoader
 from backend.src.evaluation.explainability import AnomalyExplainer
+from backend.src.evaluation.stability_analysis import StabilityAnalyzer
 from backend.src.metrics.geo_mapping import StateGeoMapper
 from backend.src.metrics.state_analytics import StateAnalytics
 from backend.src.metrics.transaction_analytics import TransactionAnalytics
@@ -114,7 +116,7 @@ def main() -> None:
     args = parser.parse_args()
 
     started = time.time()
-    print(f"[1/6] Loading dataset, temporal split, fitting ({args.model}) ...")
+    print(f"[1/7] Loading dataset, temporal split, fitting ({args.model}) ...")
 
     pipeline = AnomalyPipeline(model_name=args.model)
     run_output = pipeline.run()
@@ -147,9 +149,9 @@ def main() -> None:
         "n_features": len(run_output["feature_columns"]),
     }
     _write_json(ARTIFACTS_DIR / "model_metrics.json", model_metrics_payload)
-    print("[2/6] Wrote model_metrics.json")
+    print("[2/7] Wrote model_metrics.json")
 
-    print("[3/6] Computing feature importance / impact on the test window ...")
+    print("[3/7] Computing feature importance / impact on the test window ...")
     explainer = AnomalyExplainer(pipeline.model)
     explainability_payload = explainer.explain(run_output["X_test"], top_n=25)
     _write_json(ARTIFACTS_DIR / "explainability.json", explainability_payload)
@@ -158,7 +160,7 @@ def main() -> None:
         f"flagged_rate={explainability_payload['score_summary']['flagged_rate']:.4f}"
     )
 
-    print("[4/6] Scoring the full dataset and computing anomaly analytics ...")
+    print("[4/7] Scoring the full dataset and computing anomaly analytics ...")
     full_raw = TransactionDataLoader().load()
     scored = pipeline.score_frame(full_raw)
     anomaly_summary = TransactionAnalytics(scored).summary()
@@ -169,7 +171,7 @@ def main() -> None:
         f"rate={ov['flagged_rate']:.4f} mean_score={ov['mean_anomaly_score']:.4f}"
     )
 
-    print("[5/6] Computing per-state analytics and reconciling with GeoJSON ...")
+    print("[5/7] Computing per-state analytics and reconciling with GeoJSON ...")
     state_records = StateAnalytics(scored).compute()
     mapper = StateGeoMapper()
     state_records = mapper.attach(state_records)
@@ -190,7 +192,28 @@ def main() -> None:
             "states render with metrics but no polygon."
         )
 
-    print("[6/6] Saving the trained model bundle ...")
+    print(
+        f"[6/7] Running multi-seed stability analysis "
+        f"({len(StabilityAnalyzer(args.model).seeds)} seeds) ..."
+    )
+    stability_payload = StabilityAnalyzer(
+        model_name=args.model, contamination=run_output["contamination"]
+    ).analyze(
+        X_train=run_output["X_train"],
+        X_test=run_output["X_test"],
+        test_data=run_output["data_test"],
+    )
+    _write_json(ARTIFACTS_DIR / "stability_analysis.json", stability_payload)
+    if stability_payload["applicable"]:
+        print(
+            f"      mean_stability={stability_payload['stability']['mean_stability']:.4f} "
+            f"mean_jaccard={stability_payload['jaccard']['mean']:.4f} "
+            f"always_flagged={stability_payload['stability']['pct_always_flagged']:.4f}"
+        )
+    else:
+        print(f"      {stability_payload['note']}")
+
+    print("[7/7] Saving the trained model bundle ...")
     saved_path = ModelLoader().save(
         model=pipeline.model,
         feature_engineer=pipeline.feature_engineer,
