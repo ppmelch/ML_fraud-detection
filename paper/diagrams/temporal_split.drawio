@@ -1,0 +1,60 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="temporal_split" name="Temporal split">
+    <mxGraphModel dx="800" dy="400" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="372" pageHeight="120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- sample sizes above the bar -->
+        <mxCell id="n1" value="n = 2,431" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=10;fontColor=#1A1A1A;" vertex="1" parent="1">
+          <mxGeometry x="10" y="6" width="248" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="302" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=10;fontColor=#1A1A1A;" vertex="1" parent="1">
+          <mxGeometry x="258" y="6" width="32" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="560" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=10;fontColor=#1A1A1A;" vertex="1" parent="1">
+          <mxGeometry x="290" y="6" width="70" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- the timeline bar (widths proportional to days) -->
+        <mxCell id="t" value="&lt;b&gt;Train&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4A4A4A;strokeColor=#FFFFFF;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="10" y="24" width="248" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="v" value="&lt;b&gt;Val.&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8A8A8A;strokeColor=#FFFFFF;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="258" y="24" width="32" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="s" value="&lt;b&gt;Test&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111111;strokeColor=#FFFFFF;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="290" y="24" width="70" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- dates -->
+        <mxCell id="d0" value="Jan 2, 2023" style="text;html=1;align=left;fontFamily=Times New Roman;fontSize=9;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="8" y="54" width="70" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="Oct 3" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=9;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="234" y="54" width="40" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="Jan 1, 2024" style="text;html=1;align=right;fontFamily=Times New Roman;fontSize=9;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="292" y="54" width="70" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- roles -->
+        <mxCell id="r1" value="model and threshold fitted here" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=9;fontStyle=2;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="10" y="72" width="248" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="evaluated once" style="text;html=1;align=center;fontFamily=Times New Roman;fontSize=9;fontStyle=2;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="282" y="72" width="86" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="ar" value="" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="10" y="96" as="sourcePoint" />
+            <mxPoint x="360" y="96" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tl" value="time" style="text;html=1;align=right;fontFamily=Times New Roman;fontSize=9;fontColor=#3A3A3A;" vertex="1" parent="1">
+          <mxGeometry x="300" y="98" width="60" height="14" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

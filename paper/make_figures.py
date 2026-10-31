@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Build the figure set used by ``paper/main.tex``.
+Build the plotted figures used by ``paper/main.tex``.
+
+The two diagrams (methodology, temporal split) are drawn in draw.io from
+``paper/diagrams/*.drawio`` and exported to ``paper/figures/`` separately.
 
 Every number is read from ``backend/artifacts/*.json``. The only model run is a
 re-execution of the unchanged :class:`AnomalyPipeline` (seed 42), needed for
@@ -28,7 +31,7 @@ import matplotlib.ticker
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap, Normalize
-from matplotlib.patches import FancyBboxPatch, Patch, PathPatch
+from matplotlib.patches import Patch, PathPatch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -118,7 +121,6 @@ def _draw_states(ax, geojson: dict, color_of) -> None:
 def _rerun() -> tuple[dict, AnomalyPipeline, pd.DataFrame]:
     pipeline = AnomalyPipeline()
     result = pipeline.run()
-    result["train_scores"] = pipeline.model.anomaly_score(result["X_train"])
 
     raw = pd.read_csv(DATASET_PATH)
     scored = pipeline.score_frame(raw)
@@ -137,43 +139,6 @@ def _rerun() -> tuple[dict, AnomalyPipeline, pd.DataFrame]:
 # ---------------------------------------------------------------------------
 # Figures
 # ---------------------------------------------------------------------------
-def fig_pipeline() -> None:
-    steps = [
-        ("Transactions\n3,293 rows\n(no fraud label)", NAVY),
-        ("Temporal split\ntrain / val / test", SLATE),
-        ("Feature\nengineering\n85 features", SLATE),
-        ("Isolation Forest\n300 trees\nthreshold = P98", WINE),
-        ("Anomaly score\n+ flag", PLUM),
-    ]
-    analyses = [
-        "Temporal\ndrift", "Stability\n(10 seeds)", "Behavioral\ncontrast",
-        "SHAP", "US state\nmap",
-    ]
-    fig, ax = plt.subplots(figsize=(7.2, 2.4))
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 3.2)
-    ax.axis("off")
-    w, h, y = 1.7, 1.15, 1.85
-    for i, (label, color) in enumerate(steps):
-        x = 0.1 + i * 2.0
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.03,rounding_size=0.12",
-                                    facecolor=color, edgecolor="none"))
-        ax.text(x + w / 2, y + h / 2, label, ha="center", va="center", color="white", fontsize=8)
-        if i < len(steps) - 1:
-            ax.annotate("", xy=(x + 2.0, y + h / 2), xytext=(x + w, y + h / 2),
-                        arrowprops=dict(arrowstyle="-|>", color=CHARCOAL, lw=1.1))
-    bw, by = 1.7, 0.1
-    for i, label in enumerate(analyses):
-        x = 0.1 + i * 2.0
-        ax.add_patch(FancyBboxPatch((x, by), bw, 0.95, boxstyle="round,pad=0.03,rounding_size=0.12",
-                                    facecolor="#5E5E5E", edgecolor="none"))
-        ax.text(x + bw / 2, by + 0.475, label, ha="center", va="center", color="white", fontsize=8)
-        ax.annotate("", xy=(x + bw / 2, by + 0.98), xytext=(8.95, y - 0.02),
-                    arrowprops=dict(arrowstyle="-|>", color=CHARCOAL, lw=0.7,
-                                    connectionstyle="arc3,rad=0.0", alpha=0.7))
-    _save(fig, "fig01_pipeline")
-
-
 def fig_dataset_map(scored: pd.DataFrame, geojson: dict) -> None:
     from backend.src.modeling.config import CITY_TO_STATE
     scored = scored.assign(state=scored["Location"].map(CITY_TO_STATE))
@@ -181,51 +146,13 @@ def fig_dataset_map(scored: pd.DataFrame, geojson: dict) -> None:
     n_real = int((~scored["synthetic"]).sum())
     n_syn = int(scored["synthetic"].sum())
 
-    fig, ax = plt.subplots(figsize=(7.0, 3.6))
+    fig, ax = plt.subplots(figsize=(3.5, 2.4))
     _draw_states(ax, geojson, lambda s: OCHRE if s in synthetic_states else NAVY)
     ax.legend(handles=[
-        Patch(color=NAVY, label=f"Real Kaggle transactions (27 states, n={n_real:,})"),
-        Patch(color=OCHRE, label=f"Synthetic coverage rows (25 states, n={n_syn:,})"),
-    ], loc="upper center", bbox_to_anchor=(0.5, -0.02), ncol=2, frameon=False, fontsize=7.5)
-    ax.set_title("Dataset composition by state (contiguous US shown)")
+        Patch(color=NAVY, label=f"Real data (27 states, n={n_real:,})"),
+        Patch(color=OCHRE, label=f"Synthetic rows (25 states, n={n_syn:,})"),
+    ], loc="upper center", bbox_to_anchor=(0.5, 0.0), ncol=1, frameon=False, fontsize=7)
     _save(fig, "fig02_dataset_map")
-
-
-def fig_score_threshold(result: dict) -> None:
-    thr = result["threshold"]
-    bins = np.linspace(0, 1, 41)
-    fig, ax = plt.subplots(figsize=(3.6, 2.6))
-    ax.hist(result["train_scores"], bins=bins, density=True, color=NAVY, alpha=0.85,
-            label="Train (Jan–Oct 2023)")
-    ax.hist(result["test_scores"], bins=bins, density=True, histtype="step", lw=1.6,
-            color=WINE, label="Test (Nov 2023–Jan 2024)")
-    ax.axvline(thr, color=CHARCOAL, ls="--", lw=1.2)
-    ax.text(thr + 0.01, ax.get_ylim()[1] * 0.92, f"threshold\n= {thr:.3f}", fontsize=7.5,
-            color=CHARCOAL, va="top")
-    ax.set_xlabel("Anomaly score")
-    ax.set_ylabel("Density")
-    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=2, fontsize=7.5)
-    _save(fig, "fig03_score_threshold")
-
-
-def fig_split_rates(model_metrics: dict, stability: dict) -> None:
-    m = model_metrics["metrics"]
-    names = ["Train", "Validation", "Test"]
-    rates = [m["train"]["flagged_rate"] * 100, m["validation"]["flagged_rate"] * 100,
-             m["test"]["flagged_rate"] * 100]
-    seeds = [r["flagged_rate"] * 100 for r in stability["per_run"]]
-    fig, ax = plt.subplots(figsize=(3.6, 2.6))
-    bars = ax.bar(names, rates, color=[NAVY, FOREST, WINE], width=0.6)
-    for b, r in zip(bars, rates):
-        ax.text(b.get_x() + b.get_width() / 2, r + 0.15, f"{r:.2f}%", ha="center", fontsize=8)
-    ax.errorbar([2], [np.mean(seeds)], yerr=[[np.mean(seeds) - min(seeds)], [max(seeds) - np.mean(seeds)]],
-                fmt="o", color=CHARCOAL, ms=3, capsize=3, lw=1)
-    ax.text(2.33, min(seeds), "range over\n10 seeds", fontsize=7, color=CHARCOAL, va="bottom")
-    ax.axhline(2.0, color=CHARCOAL, ls="--", lw=1)
-    ax.text(0.62, 1.55, "2% target", fontsize=7.5, color=CHARCOAL)
-    ax.set_ylabel("Flagged transactions (%)")
-    ax.set_ylim(0, 8)
-    _save(fig, "fig04_split_rates")
 
 
 def fig_monthly_drift(scored: pd.DataFrame) -> None:
@@ -266,35 +193,31 @@ def fig_real_vs_synthetic(scored: pd.DataFrame) -> None:
 
 
 def fig_stability(stability: dict) -> None:
-    jac = [p["value"] if isinstance(p, dict) else p for p in stability["jaccard"]["pairs"]]
-    rho = [p["value"] if isinstance(p, dict) else p for p in stability["rank_correlation"]["pairs"]]
-    s = np.array(stability["stability"]["stability_score"])
-    runs = np.rint(s * 10).astype(int)
+    jac = stability["jaccard"]["pairs"]
+    rho = stability["rank_correlation"]["pairs"]
+    runs = np.rint(np.array(stability["stability"]["stability_score"]) * 10).astype(int)
     groups = {
-        "Never (0/10)": int((runs == 0).sum()),
         "1–4 runs": int(((runs >= 1) & (runs <= 4)).sum()),
         "5–7 runs": int(((runs >= 5) & (runs <= 7)).sum()),
         "8–9 runs": int(((runs >= 8) & (runs <= 9)).sum()),
         "All 10 runs": int((runs == 10).sum()),
     }
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.6), gridspec_kw={"wspace": 0.55})
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(3.5, 3.7), gridspec_kw={"hspace": 0.8})
     bins = np.linspace(0.5, 1.0, 26)
-    a1.hist(jac, bins=bins, color=WINE, label=f"Jaccard (flag set), mean {np.mean(jac):.3f}")
-    a1.hist(rho, bins=bins, color=NAVY, label=f"Spearman ρ (ranking), mean {np.mean(rho):.3f}")
-    a1.set_xlabel("Pairwise agreement between seeds")
-    a1.set_ylabel("Seed pairs (of 45)")
-    a1.legend(frameon=False, loc="upper left", fontsize=7)
-    a1.set_ylim(0, 30)
-    a1.set_title("(a) Ranking agrees more than the binary flag")
+    a1.hist(jac, bins=bins, color=SLATE, label=f"Same flagged set (Jaccard), mean {np.mean(jac):.2f}")
+    a1.hist(rho, bins=bins, color=WINE, label=f"Same ranking (Spearman), mean {np.mean(rho):.2f}")
+    a1.set_xlabel("Agreement between two seeds")
+    a1.set_ylabel("Seed pairs")
+    a1.set_ylim(0, 32)
+    a1.legend(frameon=False, loc="upper left", fontsize=6.8)
+    a1.set_title("(a) Agreement across the 45 seed pairs")
 
-    labels = list(groups)[1:]
-    vals = [groups[k] for k in labels]
-    colors = ["#C4C4C4", "#8A8A8A", "#4A4A4A", "#111111"]
-    bars = a2.barh(labels, vals, color=colors)
-    for b, v in zip(bars, vals):
-        a2.text(v + 0.3, b.get_y() + b.get_height() / 2, str(v), va="center", fontsize=8)
-    a2.set_xlabel("Test transactions (of the 52 ever flagged)")
-    a2.set_title(f"(b) How often each flagged row is flagged\n({groups['Never (0/10)']} of 560 never flagged)")
+    bars = a2.barh(list(groups), list(groups.values()),
+                   color=["#C4C4C4", "#8A8A8A", "#4A4A4A", "#111111"])
+    for b, v in zip(bars, groups.values()):
+        a2.text(v + 0.3, b.get_y() + b.get_height() / 2, str(v), va="center", fontsize=7.5)
+    a2.set_xlabel("Test transactions")
+    a2.set_title("(b) Times each of the 52 ever-flagged rows was flagged")
     a2.grid(axis="y", visible=False)
     _save(fig, "fig07_stability")
 
@@ -344,17 +267,17 @@ def fig_shap(explainability: dict, top_n: int = 15) -> None:
 def fig_temporal(anomaly_summary: dict) -> None:
     hours = anomaly_summary["by_hour"]
     days = anomaly_summary["by_day_of_week"]
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.4), gridspec_kw={"width_ratios": [2, 1]})
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(3.5, 3.8), gridspec_kw={"hspace": 0.6})
     a1.bar([h["bucket"] for h in hours], [h["anomaly_rate"] * 100 for h in hours],
            color=[WINE if h["bucket"] <= 4 else SLATE for h in hours])
     a1.set_xlabel("Hour of day")
     a1.set_ylabel("Flagged (%)")
-    a1.set_title("(a) By hour (00–04 h highlighted)")
+    a1.set_title("(a) By hour")
     a1.set_xticks(range(0, 24, 2))
     a2.bar([d["bucket"][:3] for d in days], [d["anomaly_rate"] * 100 for d in days],
            color=[WINE if d["bucket"] in ("Saturday", "Sunday") else SLATE for d in days])
+    a2.set_ylabel("Flagged (%)")
     a2.set_title("(b) By day of week")
-    a2.tick_params(axis="x", labelsize=6.5)
     for a in (a1, a2):
         a.axhline(2.0, color=CHARCOAL, ls="--", lw=0.9)
     _save(fig, "fig10_temporal")
@@ -364,11 +287,12 @@ def fig_state_map(state_metrics: list, geojson: dict) -> None:
     values = {s["state"]: s["anomaly_rate"] * 100 for s in state_metrics}
     vmax = max(values.values())
     norm = Normalize(0, vmax)
-    fig, ax = plt.subplots(figsize=(7.0, 3.6))
+    fig, ax = plt.subplots(figsize=(3.5, 2.3))
     _draw_states(ax, geojson, lambda s: DARK_CMAP(norm(values[s])) if s in values else "#E6E6E6")
     sm = plt.cm.ScalarMappable(cmap=DARK_CMAP, norm=norm)
-    fig.colorbar(sm, ax=ax, fraction=0.025, pad=0.02, label="Flagged transactions (%)")
-    ax.set_title("Anomaly rate by state (full dataset, all states ≥ 15 transactions)")
+    cb = fig.colorbar(sm, ax=ax, orientation="horizontal", fraction=0.05, pad=0.02, shrink=0.7)
+    cb.set_label("Flagged transactions (%)", fontsize=7.5)
+    cb.ax.tick_params(labelsize=7)
     _save(fig, "fig11_state_map")
 
 
@@ -399,19 +323,6 @@ def fig_state_support(state_metrics: list, scored: pd.DataFrame) -> None:
     _save(fig, "fig12_state_support")
 
 
-def fig_score_vs_stability(stability: dict) -> None:
-    st = stability["stability"]
-    score = np.array(st["mean_anomaly_score"])
-    s = np.array(st["stability_score"])
-    jitter = np.random.default_rng(0).uniform(-0.015, 0.015, len(s))
-    fig, ax = plt.subplots(figsize=(3.6, 2.6))
-    ax.scatter(score, s + jitter, s=9, color=np.where(s == 1, WINE, np.where(s > 0, PLUM, OCHRE)),
-               alpha=0.8, linewidth=0)
-    ax.set_xlabel("Mean anomaly score over 10 seeds")
-    ax.set_ylabel("Fraction of runs flagged")
-    _save(fig, "figA1_score_vs_stability")
-
-
 def main() -> None:
     model_metrics = _load("model_metrics.json")
     stability = _load("stability_analysis.json")
@@ -423,10 +334,7 @@ def main() -> None:
     result, _, scored = _rerun()
     assert abs(result["threshold"] - model_metrics["threshold"]) < 1e-9, "re-run diverged from artifacts"
 
-    fig_pipeline()
     fig_dataset_map(scored, geojson)
-    fig_score_threshold(result)
-    fig_split_rates(model_metrics, stability)
     fig_monthly_drift(scored)
     fig_real_vs_synthetic(scored)
     fig_stability(stability)
@@ -435,7 +343,6 @@ def main() -> None:
     fig_temporal(anomaly_summary)
     fig_state_map(state_metrics, geojson)
     fig_state_support(state_metrics, scored)
-    fig_score_vs_stability(stability)
 
 
 if __name__ == "__main__":

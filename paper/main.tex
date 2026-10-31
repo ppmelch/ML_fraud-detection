@@ -80,11 +80,11 @@ Melchor Soto \MakeLowercase{\textit{et al.}}: Beyond Fraud Detection
 % ==========================================================
 
 \begin{abstract}
-Detecting financial fraud is usually a supervised learning problem, but in practice, labeled examples of fraud are rarely available. This study takes a different approach: instead of trying to classify transactions as fraudulent or not, it looks for transactions that simply behave differently from the rest. Using an Isolation Forest model trained on 3,293 unlabeled US bank transactions with a strictly temporal split, unusual transactions are flagged and then explored from several angles, including how they change over time, what makes them behave differently, and where they tend to occur geographically. To make sure these findings are not just noise, the model is refit under ten random seeds and SHAP is used to understand which features drive each anomaly. An interactive map of the United States is also used to show where the anomalies are concentrated. The anomaly ranking proved stable across seeds (mean Spearman $\rho = 0.899$), whereas the binary flag was less so (mean Jaccard $= 0.689$); 16 test transactions were flagged in every run. A threshold fixed on training data (2\% contamination) flagged 2.32\% of validation and 6.79\% of test transactions, revealing a progressive score drift that begins months before the test window. Flagged transactions differ from normal ones mainly through amount relative to its context, while the model's overall notion of anomaly is multifactorial. Finally, the geographic pattern is shown to be driven by sample size and by the synthetic rows added to give the map full coverage, so it must be read descriptively. All of this is obtained without ever needing labeled fraud data.
+Detecting financial fraud is usually a supervised learning problem, but in practice, labeled examples of fraud are rarely available. This study takes a different approach: instead of trying to classify transactions as fraudulent or not, it looks for transactions that simply behave differently from the rest. Using an Isolation Forest model on 3,293 unlabeled US bank transactions, unusual transactions are flagged and then explored from several angles, including how they change over time, what makes them behave differently, and where they tend to occur geographically. To make sure these findings are not just noise, the model is retrained with ten random seeds and SHAP is used to understand which features drive each anomaly. An interactive map of the United States is also used to show where the anomalies are concentrated. The results show that the model's ranking of unusual transactions is consistent across runs, that a threshold fixed on past data flags three times more transactions in later months, that flagged transactions stand out mainly because of their amount, and that the geographic pattern depends mostly on sample size, all without ever needing labeled fraud data.
 \end{abstract}
 
 \begin{IEEEkeywords}
-anomaly detection, unsupervised learning, fraud detection, Isolation Forest, financial data, model stability, SHAP, temporal drift
+anomaly detection, unsupervised learning, fraud detection, Isolation Forest, financial data
 \end{IEEEkeywords}
 
 % ==========================================================
@@ -96,44 +96,47 @@ anomaly detection, unsupervised learning, fraud detection, Isolation Forest, fin
 
 \IEEEPARstart{F}{inancial} fraud represents a significant challenge for financial institutions, as large volumes of transactions must be continuously analyzed to identify unusual behavior. Most financial transactions correspond to legitimate activity, while only a small portion may exhibit patterns that require further investigation. Consequently, identifying potentially anomalous transactions within a large amount of normal financial activity is difficult to perform manually and requires automated detection mechanisms.
 
-A common approach to financial fraud detection is to formulate the problem as a supervised classification task, where historical transactions are assigned labels such as fraudulent or legitimate. However, obtaining reliable fraud labels can be difficult, incomplete, or unavailable in real-world financial datasets. In addition, fraudulent behavior may change over time, making previously observed patterns insufficient to describe new forms of anomalous activity. These limitations reduce the applicability of approaches that depend entirely on previously labeled fraudulent transactions.
+A common approach to financial fraud detection is to formulate the problem as a supervised classification task, where historical transactions are assigned labels such as fraudulent or legitimate. However, obtaining reliable fraud labels can be difficult, incomplete, or unavailable in real-world financial datasets. In addition, fraudulent behavior may change over time, making previously observed patterns insufficient to describe new forms of anomalous activity.
 
-Anomaly detection provides an alternative perspective for addressing this problem. Instead of learning predefined fraud classes, anomaly detection methods aim to identify observations that deviate from the general behavior present in the data. This formulation is particularly relevant when anomalous cases are rare and reliable labels are not available, allowing unusual transactions to be identified without requiring previously confirmed fraud cases. Similar approaches have been explored in other domains where anomalous behavior cannot be completely specified in advance, motivating the use of unsupervised methods for detecting deviations from normal patterns \cite{chandola2009anomaly}.
+Anomaly detection provides an alternative perspective. Instead of learning predefined fraud classes, anomaly detection methods aim to identify observations that deviate from the general behavior present in the data \cite{chandola2009anomaly}. Among these techniques, Isolation Forest identifies observations that can be isolated more easily than the majority of the data, which makes it suitable for transaction data in which anomalies may not follow a known pattern \cite{liu2008isolation}.
 
-Several machine learning techniques have been proposed for anomaly detection, including statistical methods, clustering, dimensionality reduction, and tree-based approaches. Among these techniques, Isolation Forest provides an unsupervised approach that identifies observations that can be isolated more easily than the majority of the data. This makes it suitable for analyzing high-dimensional transaction data in which anomalous observations may not follow a previously known pattern \cite{liu2008isolation}.
+However, identifying anomalous transactions is only one part of the problem. An anomaly score by itself does not explain whether the detected observation represents a meaningful behavioral deviation, how consistently it is identified, or how anomalous behavior is distributed across the data. In this work, we reformulate financial fraud detection as an unsupervised anomaly detection problem, apply an Isolation Forest model, and analyze the flagged transactions from five perspectives: their evolution over time, their stability across runs, their behavior, the features that drive them, and their geographic distribution. Rather than treating flagged transactions as confirmed fraud, the approach uses them as observations that require further investigation.
 
-However, identifying anomalous transactions is only one part of the problem. An anomaly score by itself does not explain whether the detected observation represents a meaningful behavioral deviation, how consistently it is identified, or how anomalous behavior is distributed across different dimensions of the data. Therefore, a more complete analysis should consider not only the detection of anomalies but also their temporal, behavioral, and geographic characteristics. In addition, evaluating the stability of detected anomalies across different model configurations can provide information about the robustness of the resulting observations.
-
-In this work, we reformulate financial fraud detection as an unsupervised anomaly detection problem in the absence of confirmed fraud labels. We apply an Isolation Forest model to identify transactions that deviate from the observed behavioral patterns and subsequently analyze the detected anomalies from multiple perspectives. The analysis considers their temporal distribution, behavioral characteristics, feature contributions, geographic distribution, and stability across multiple model runs. Rather than treating detected anomalies as confirmed fraudulent transactions, the proposed approach uses them as observations that require further analysis and investigation.
-
-The main contribution of this work is therefore not limited to detecting anomalous transactions but to providing a multidimensional characterization of unusual financial behavior. By combining unsupervised detection with robustness analysis, interpretability, and geographic visualization, this study provides a framework for investigating anomalous financial activity when reliable fraud labels are not available. Concretely, the contributions are:
-\begin{itemize}
-    \item a leakage-free, temporally split unsupervised pipeline whose every output is an anomaly score rather than a fraud probability;
-    \item a stability protocol that separates the consistency of the anomaly \emph{ranking} from that of the binary \emph{flag}, and isolates a core of transactions flagged under every seed;
-    \item evidence that a train-derived threshold does not keep its contamination rate over time, together with a month-by-month view of when the drift begins;
-    \item a behavioral and SHAP-based characterization of what distinguishes flagged transactions, and
-    \item an interactive map of the United States, together with an explicit audit of how sample size and synthetic coverage rows shape the geographic pattern it displays.
-\end{itemize}
+The main contribution of this work is therefore not limited to detecting anomalous transactions but to providing a multidimensional characterization of unusual financial behavior, together with a clear account of what can and cannot be concluded when reliable fraud labels are not available.
 
 % ==========================================================
-% 1b. HYPOTHESES  (new section, from the hypothesis document)
+% OBJECTIVES (new)
+% ==========================================================
+
+\section{Objectives}
+
+\subsection{General Objective}
+
+To build a machine learning model capable of detecting possible fraud by analyzing transaction data and identifying unusual patterns in financial transactions, without relying on fraud labels.
+
+\subsection{Specific Objectives}
+
+\begin{enumerate}
+    \item \textbf{Identify atypical transactions:} implement an Isolation Forest model to detect transactions whose behavior deviates from the general pattern of the data, without requiring records previously labeled as fraudulent or legitimate.
+    \item \textbf{Analyze behavioral patterns:} examine transaction characteristics such as amount, frequency, timing, and other available variables to identify anomalies that may be related to fraudulent activity.
+    \item \textbf{Evaluate the model's performance:} assess the Isolation Forest results with anomaly detection criteria (stability across runs, behavior of the threshold over time, and feature importance) to determine its ability to identify suspicious transactions and to recognize its limitations in the absence of labeled data.
+\end{enumerate}
+
+% ==========================================================
+% HYPOTHESES (new)
 % ==========================================================
 
 \section{Hypotheses}
 
-The general hypothesis of this work is that, even without fraud labels, an unsupervised model can identify unusual transactions in a way that is \emph{useful and characterizable}: its ranking will be consistent, the behavior of the transactions it flags will be distinguishable from that of normal transactions, and its limitations, particularly over time and across geography, will be identifiable and measurable.
+Our main hypothesis is simple: \emph{even without fraud labels, a model can find unusual transactions in a way that is consistent and that we can explain.} We split it into five short statements:
 
-Five specific hypotheses follow from it. Each is stated together with the observable evidence used to assess it in Section~\ref{sec:hypothesis_eval}.
-
-\textbf{H1 (stability).} The ranking of transactions by anomaly score will be stable across random seeds, whereas the binary decision of flagging a transaction will be less stable, because the variation concentrates on the transactions closest to the threshold. \emph{Evidence:} pairwise Spearman correlation of scores higher than pairwise Jaccard similarity of flagged sets, and a bimodal per-transaction stability.
-
-\textbf{H2 (temporal transfer).} A fixed threshold, computed only from training data, will not preserve the expected anomaly rate in later periods, because of a shift in the distribution of the scores. \emph{Evidence:} validation and test flagged rates compared with the 2\% target, across all seeds and within the real (non-synthetic) rows alone.
-
-\textbf{H3 (behavioral signature).} Flagged transactions will differ from normal ones mainly through amount-related variables, both in absolute terms and relative to their context (hour, state, merchant, and account). \emph{Evidence:} standardized mean gaps between flagged and normal transactions.
-
-\textbf{H4 (multifactorial anomaly).} The model's notion of anomaly will be multifactorial, with no single variable dominating the score. \emph{Evidence:} spread of mean absolute SHAP values across feature categories.
-
-\textbf{H5 (descriptive geography).} The observed geographic patterns will be descriptive and will depend on each state's sample size, so they cannot be interpreted as evidence of a higher real fraud risk. \emph{Evidence:} relation between state support and anomaly rate, and comparison between states covered by real and by synthetic rows.
+\begin{itemize}
+    \item \textbf{H1 (stability):} if we retrain the model with different random seeds, the order of the most unusual transactions will stay almost the same, even if the exact list of flagged ones changes a little.
+    \item \textbf{H2 (time):} a threshold chosen with old data will flag more than 2\% of transactions in newer months, because behavior changes over time.
+    \item \textbf{H3 (amount):} flagged transactions will stand out mainly because of their amount, especially when it is large for its context.
+    \item \textbf{H4 (many factors):} no single variable will explain the anomaly score by itself.
+    \item \textbf{H5 (geography):} states with few transactions will show the most extreme rates, so the map cannot be read as real fraud risk.
+\end{itemize}
 
 % ==========================================================
 % 2. TERMINOLOGY AND PROBLEM DEFINITION
@@ -143,13 +146,13 @@ Five specific hypotheses follow from it. Each is stated together with the observ
 
 \subsection{Preliminary Definitions}
 
-\textit{Fraud detection} is the task of deciding whether a transaction is fraudulent; it requires a ground-truth label against which a decision can be checked. \textit{Anomaly detection} is the task of finding observations that deviate markedly from the behavior of most of the data \cite{chandola2009anomaly}; it does not require a label. In this work, an \textit{anomaly score} $s(x)\in[0,1]$ measures how unusual a transaction $x$ is with respect to the distribution observed during training, where a larger value indicates a more unusual transaction. A transaction is \textit{flagged as anomalous} when its score is at or above the \textit{operating threshold} $\tau$, and the \textit{contamination} $c$ is the expected proportion of anomalies in the data, fixed at $c=0.02$. Learning is \textit{unsupervised}: the model is fitted on transactions alone, without any target variable.
+An \textit{anomaly} is an observation that clearly deviates from the behavior of most of the data \cite{chandola2009anomaly}. In this work, the \textit{anomaly score} of a transaction is a number between 0 and 1 that measures how unusual it is compared with the training data; higher means more unusual. A transaction is \textit{flagged} when its score reaches the \textit{threshold}, and the \textit{contamination} is the share of transactions we expect to flag, fixed at 2\%. The learning is \textit{unsupervised} because the model only sees the transactions, never a label.
 
-It is important to distinguish an anomalous transaction from a confirmed fraudulent one. Because the dataset contains no fraud label, the score is not a probability of fraud and the number of flagged transactions is not a fraud count. Throughout the paper, flagged transactions are therefore described as \emph{unusual relative to the training distribution}, and never as detected fraud.
+An anomalous transaction is not a confirmed fraudulent one. Because the dataset has no fraud label, the score is not a probability of fraud and the number of flagged transactions is not a fraud count. Flagged transactions are therefore described as \emph{unusual}, never as detected fraud. Less common technical terms used throughout the paper, from \textit{machine learning} to \textit{SHAP}, are defined in plain language in the Glossary at the end of the paper (Section~\ref{sec:glossary}).
 
 \subsection{Challenges}
 
-The first challenge is the \textit{absence of ground truth}: without labels it is impossible to compute supervised metrics such as precision, recall, or AUC, and the quality of the model must be assessed indirectly through its stability, its interpretability, and its coherence with basic intuition. The second is \textit{class imbalance}: anomalies are, by construction, a small minority (2\% here), so any estimate computed on them rests on few observations. The third is \textit{non-stationarity}: transactional behavior changes over time, so a threshold calibrated on historical data may not transfer to later periods. The fourth is the \textit{sensitivity of binary decisions near the threshold}, where small variations of the model change which transactions are flagged even when the ranking is consistent. Finally, \textit{interpretability} is harder than in the supervised case, because there is no label to which feature contributions can be anchored, and the dataset is small compared with those typically used in fraud analytics, which limits the precision of any estimate, especially per state or over short windows.
+Without labels, metrics such as precision or recall cannot be computed, so the model has to be judged indirectly: by how stable, interpretable, and sensible its output is. Anomalies are also rare by design, so every conclusion rests on few observations. Transaction behavior changes over time, so a threshold set on past data may not work later. Finally, the dataset is small, which limits any estimate per state or per short period.
 
 % ==========================================================
 % 3. RELATED WORK
@@ -157,11 +160,9 @@ The first challenge is the \textit{absence of ground truth}: without labels it i
 
 \section{Related Work}
 
-Most of the work on transactional fraud detection is supervised. Because fraud is a very small fraction of the total, conventional classifiers tend to ignore the minority class, and accuracy can remain high even when no fraud is detected. Chawla et al. \cite{chawla2002smote} proposed SMOTE, an oversampling technique that generates synthetic examples of the minority class, and more recent work has explored cost-sensitive learning, where the decision threshold is chosen to minimize the monetary cost of errors \cite{danang2025cost}. Graph neural networks that model accounts, merchants, and devices as connected nodes have also been proposed, which makes it possible to capture coordinated fraud \cite{cheng2024gnn}. All of these approaches, however, depend on a reliable set of labeled fraud cases.
+Most fraud detection research is supervised. Because fraud is a tiny fraction of all transactions, standard classifiers tend to ignore it, which motivated oversampling techniques such as SMOTE \cite{chawla2002smote}, cost-sensitive learning that chooses the threshold by the cost of each error \cite{danang2025cost}, and graph neural networks that model accounts, merchants, and devices as a network \cite{cheng2024gnn}. All of them, however, need a reliable set of labeled fraud cases.
 
-When no labels are available, anomaly detection offers an alternative; a broad review of the field is presented in \cite{chandola2009anomaly}. Isolation Forest \cite{liu2008isolation} differs from density- or distance-based methods: instead of modeling normal behavior, it explicitly isolates observations through random partitions, so that anomalies, being few and different, require fewer cuts. Its efficiency and suitability for high-dimensional tabular data make it a common baseline. To explain why an observation was flagged, SHAP \cite{lundberg2017unified} attributes the model output to its features through Shapley values, and its tree algorithm \cite{lundberg2020trees} computes these attributions efficiently.
-
-This work sits between these lines. Rather than proposing a new detector, it applies a standard unsupervised model and focuses on what can be said about its output without labels: how stable it is, how its threshold behaves over time, which variables drive it, and how flagged transactions are distributed across states. The research gap it addresses is precisely this evaluation layer, which is usually replaced by supervised metrics that are unavailable in the unlabeled setting.
+When no labels exist, anomaly detection is the natural alternative \cite{chandola2009anomaly}. Isolation Forest \cite{liu2008isolation} does not try to describe normal behavior; it isolates each observation with random cuts, and anomalies, being few and different, need fewer cuts. To explain a model's output, SHAP \cite{lundberg2017unified} assigns each feature a share of the prediction, and its tree version \cite{lundberg2020trees} does so efficiently. Two further lines of work matter for the evaluation. In fraud, customer habits and fraudster strategies change over time, a problem known as \textit{concept drift} \cite{gama2014survey,dalpozzolo2018realistic,lucas2020survey}, and evaluating a model on data mixed from different periods can leak future information into training \cite{kaufman2012leakage}. Benchmarks of unsupervised detectors show that no method wins everywhere and that global methods are a safe default when the type of anomaly is unknown \cite{goldstein2016comparative}, while direct comparisons on card data find that unsupervised models come close to supervised ones \cite{niu2019comparison}. This work does not propose a new detector. It uses a standard one and focuses on what can be said about its output without labels: how stable it is, how its threshold behaves over time, what drives it, and how it varies across states.
 
 % ==========================================================
 % 4. DATASET AND EXPERIMENTAL SETUP
@@ -171,47 +172,31 @@ This work sits between these lines. Rather than proposing a new detector, it app
 
 \subsection{Dataset}
 
-The source data is the public \textit{Bank Transaction Dataset for Fraud Detection}, which contains 2,512 US bank transactions from 495 accounts. Despite its name, it is distributed \emph{without a fraud label}, so it is an anomaly detection dataset and not a classification one. Each record includes the transaction amount, type (debit or credit), channel (ATM, branch, or online), timestamp, city, merchant and device identifiers, customer age and occupation, session duration, login attempts, and account balance.
+The source is the public \textit{Bank Transaction Dataset for Fraud Detection}: 2,512 US bank transactions from 495 accounts which, despite its name, has \emph{no fraud label}. Each record includes the amount, type (debit or credit), channel (ATM, branch, or online), date and time, city, customer age and occupation, session duration, login attempts, and account balance.
 
-The working dataset used in every experiment has 3,293 transactions from 654 accounts, distributed across 52 US states and territories, covering 2 January 2023 to 1 January 2024. Because it lacks a fraud label, every model output is an anomaly score and never a fraud probability or a count of confirmed fraud. Across the full period, the average transaction amount is \$298.13 and the average account balance is \$5,145.78.
-
-\subsection{Synthetic Geographic Coverage and Its Purpose}
-\label{sec:augmentation}
-
-One objective of the study is to present the anomalies on an interactive map of the United States. The 43 city names in the source data, however, resolve to only 27 of the 52 polygons in the GeoJSON file that defines the map, so 25 states would appear empty. To give every polygon a value, 781 synthetic rows were added for those 25 states (Fig.~\ref{fig:dataset_map}). For each uncovered state, a representative city was assigned and $n=\mathrm{clip}(\mathrm{round}(10\cdot P),20,100)$ rows were created, where $P$ is the state population in millions. Rows were drawn by resampling the \emph{whole} real dataset with replacement; only the location and the transaction and account identifiers were replaced, the amount, balance, and duration received a multiplicative jitter $\times\exp(\mathcal{N}(0,0.15))$ clipped to the real range, and the timestamp was shifted by $\mathcal{U}(-3,3)$ days within the real span. Real rows are copied unchanged, and synthetic rows remain identifiable by their identifier prefix.
-
-The purpose of these rows is exclusively \emph{visual coverage}: they are statistically faithful to the national distribution but not to any real local behavior. Section~\ref{sec:res_synthetic} shows that they nonetheless influence the model, which is why every geographic result is accompanied by the real/synthetic distinction.
+One goal of the project was to show the results on an interactive map of the United States, but the real data covers only 27 of the 52 states and territories in the map. To fill the remaining 25, we added 781 \emph{synthetic} transactions created by resampling real transactions, assigning them a city in each missing state, and slightly perturbing the amount, balance, and date (Fig.~\ref{fig:dataset_map}). Their only purpose is visual coverage, and they remain identifiable. The working dataset therefore has 3,293 transactions from 654 accounts, from 2 January 2023 to 1 January 2024. As shown later, these synthetic rows turned out to affect the results, so every geographic finding separates them from the real ones.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig02_dataset_map.pdf}
-\caption{Composition of the working dataset by state. Dark: states covered by the 2,512 real transactions. Light: the 25 states covered only by the 781 synthetic rows added so that the US map has a value for every polygon (Alaska, Hawaii, and Puerto Rico, both synthetic, are not drawn).}
+\caption{States covered by real transactions (dark) and by the synthetic rows added so that the map has a value for every state (light).}
 \label{fig:dataset_map}
 \end{figure}
 
 \subsection{Feature Engineering}
 
-From the original fields, 85 features covering temporal, behavioral, geographic, and demographic aspects were built. \textit{Temporal} features include the month, the hour, and indicators of night-time and weekend transactions. \textit{Transaction-level} amount features include the raw amount and its logarithm, the logarithm of the account balance, and the ratio between amount and balance. \textit{Contextual deviation} features express how far the amount of a transaction departs from what is usual for its hour, state, merchant, or account (e.g., \texttt{Amount\_Dev\_Hour} and \texttt{Amount\_Dev\_Account}). \textit{Account-level} activity is represented by the number of transactions per account and the login attempts. Categorical fields such as state, transaction type, channel, and customer occupation are one-hot encoded, and the frequency of each state in the data is added as a \textit{geographic} feature. All statistics used by these features are fitted on the training window only and then applied to the later windows.
+From the original fields we built 85 features. \textit{Time} features include the month, the hour, and whether the transaction happened at night or on a weekend. \textit{Amount} features include the amount, the account balance, and the ratio between them. \textit{Context} features measure how far an amount is from what is usual for the same hour, state, merchant, or account. \textit{Account} features include the number of transactions per account and the login attempts. Categories such as state, transaction type, channel, and occupation are turned into yes/no columns. All of these are computed with training data only.
 
 \subsection{Temporal Data Split}
 
-The data were split temporally and not at random: the model is trained on the past, the threshold is checked on a recent period, and evaluation is performed once on the future. A random split would leak future behavior into training and overestimate the generalization capacity. Table~\ref{tab:split} summarizes the three windows.
+The data were split by date and not at random (Fig.~\ref{fig:split}): the model learns from the past, is checked on a recent month, and is evaluated once on the most recent two months. A random split would let the model see future behavior during training and would make the results look better than they are, a form of \textit{data leakage} \cite{kaufman2012leakage}.
 
-\begin{table}[!t]
-\renewcommand{\arraystretch}{1.2}
-\caption{Temporal Split of the Data}
-\label{tab:split}
+\begin{figure}[!t]
 \centering
-\begin{tabular}{lrcc}
-\hline
-\textbf{Window} & \textbf{$n$} & \textbf{Start} & \textbf{End} \\
-\hline
-Training   & 2,431 & 2023-01-02 & 2023-10-03 \\
-Validation &   302 & 2023-10-04 & 2023-11-02 \\
-Test       &   560 & 2023-11-03 & 2024-01-01 \\
-\hline
-\end{tabular}
-\end{table}
+\includegraphics[width=\columnwidth]{figures/fig00_temporal_split.pdf}
+\caption{Temporal split. The model and its threshold are fixed with the training period and then applied, unchanged, to validation and test.}
+\label{fig:split}
+\end{figure}
 
 % ==========================================================
 % 5. METHODOLOGY
@@ -219,50 +204,34 @@ Test       &   560 & 2023-11-03 & 2024-01-01 \\
 
 \section{Methodology}
 
-Fig.~\ref{fig:pipeline} summarizes the full pipeline: the detection stage on top and the five analyses applied to its output below.
+Fig.~\ref{fig:pipeline} summarizes the process: the detection steps on the left and the five analyses of the output on the right.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/fig01_pipeline.pdf}
-\caption{Overview of the methodology. The unlabeled transactions are split in time, transformed into 85 features, and scored by an Isolation Forest whose threshold is fixed at the 98th percentile of training scores. The resulting scores and flags are then analyzed from five angles.}
+\includegraphics[width=\columnwidth]{figures/fig01_methodology.pdf}
+\caption{Methodology. Transactions are split by date, turned into features, and scored by an Isolation Forest; its scores and flags are then analyzed from five angles.}
 \label{fig:pipeline}
-\end{figure*}
+\end{figure}
 
 \subsection{Isolation Forest}
 
-Isolation Forest \cite{liu2008isolation} builds an ensemble of random trees that partition the data recursively by choosing a feature and a split value at random. Observations far from the majority are isolated with fewer cuts, so their average path length $E(h(x))$ is shorter. The model was selected because it does not require labels, scales well to high-dimensional tabular data, and does not assume any specific form of anomalous behavior. The main model uses 300 trees, an expected contamination of 0.02, and a random seed of 42. The configuration was fixed before the analysis and was not tuned in response to any subsequent result.
+Isolation Forest \cite{liu2008isolation} builds many random trees that split the data with random cuts. Unusual transactions end up alone after only a few cuts, while normal ones need many; the fewer cuts needed, the higher the anomaly score. We chose it because it needs no labels, works well with many features, and does not assume what an anomaly looks like. We used 300 trees and a fixed random seed (42), and the configuration was not adjusted after seeing any result.
 
 \subsection{Anomaly Score and Threshold}
 
-The path length is converted into the classic anomaly score
-\begin{equation}
-    s(x,n) = 2^{-\frac{E(h(x))}{c(n)}},
-    \label{equation:anomaly_score}
-\end{equation}
-where $c(n)$ is the average path length of an unsuccessful search in a binary tree built on $n$ points. In the pipeline, this score is rescaled to $[0,1]$ so that higher always means more unusual. The operating threshold is
-\begin{equation}
-    \tau = Q_{1-c}\big(\{s(x): x \in \mathcal{D}_{\text{train}}\}\big) = 0.710495,
-    \label{equation:threshold}
-\end{equation}
-i.e., the 98th percentile of the training scores, which corresponds to the 2\% contamination target. It is fixed using the training window only and applied unchanged to validation and test. It is thus a \emph{policy decision} and not a value learned against labels.
+Each transaction receives a score between 0 and 1. The threshold was set so that exactly the top 2\% of training transactions are flagged, which gives a value of 0.710. It is computed with training data only and then used unchanged in validation and test. This is a policy decision, not something learned from labels.
 
 \subsection{Stability Analysis}
 
-To measure how reliable the flagged transactions are, the same configuration was refit ten times with different seeds (42 to 51), each with its own train-derived threshold, and evaluated on the same 560-transaction test window. Two complementary measures were computed over the 45 pairs of runs. The Jaccard similarity between flagged sets $F_i$ and $F_j$,
-\begin{equation}
-    J(F_i,F_j)=\frac{|F_i\cap F_j|}{|F_i\cup F_j|},
-\end{equation}
-reflects agreement on the binary decision, while the Spearman correlation between the score vectors is threshold-independent and reflects agreement on the ranking. In addition, the stability of each transaction was defined as the fraction of the ten runs in which it was flagged. Since most transactions are never flagged, it is also reported conditional on having been flagged at least once.
+To check whether the flags are just noise, we retrained the same model ten times with different random seeds and scored the same 560 test transactions. Measuring how much a ranking or a selected set changes when the training is perturbed is a standard way to assess stability \cite{kalousis2007stability}. We compared every pair of runs in two ways: how many flagged transactions they share (Jaccard similarity, from 0 to 1) and how similarly they order all transactions from most to least unusual (Spearman correlation). We also counted, for each transaction, in how many of the ten runs it was flagged.
 
 \subsection{Behavioral and Geographic Analysis}
 
-Flagged and normal test transactions were compared feature by feature through the standardized difference between their means. Feature importance was computed with SHAP \cite{lundberg2017unified} using its tree explainer \cite{lundberg2020trees} on a sample of 560 transactions, as the mean absolute SHAP value of each feature. As an additional check, and not as validation, the model was compared with a transparent hand-built rule based on high amount, login attempts, unusual hour, and extreme session duration.
-
-Geographically, the anomaly rate per state was computed on the full scored dataset, requiring a minimum support of 15 transactions, and state names were reconciled with the GeoJSON file so that all 52 states could be drawn. Every state-level result is further split into states covered by real and by synthetic rows. Hour and day-of-week rates use a minimum support of 20 transactions per bucket.
+We compared flagged and normal test transactions feature by feature, measuring the difference between their averages in units of standard deviation. We used SHAP \cite{lundberg2017unified,lundberg2020trees} to measure how much each feature moves the score on average. As an extra check, not as validation, we compared the model with a simple hand-made rule (high amount, many login attempts, unusual hour, very long session). Finally, we computed the share of flagged transactions per state, requiring at least 15 transactions per state.
 
 \subsection{Interactive Geographic Visualization}
 
-The results are served by a REST API and displayed in a web dashboard. Its central element is an interactive choropleth of the United States in which each state is colored by its anomaly rate; clicking or searching a state opens a card with its number of transactions, flagged transactions, rate, and mean anomaly score, and states below the support floor are marked. The dashboard also shows the score distribution and the anomaly rate by hour, day, channel, and transaction type. The static maps in this paper (Figs.~\ref{fig:dataset_map} and~\ref{fig:state_map}) are drawn from the same GeoJSON and the same artifacts as the interactive map.
+The results are displayed in a web dashboard whose centerpiece is an interactive map of the United States, colored by each state's share of flagged transactions. Clicking or searching a state shows its number of transactions, flagged transactions, and average score. The dashboard also shows the anomaly rate by hour, day, channel, and transaction type.
 
 % ==========================================================
 % 6. RESULTS
@@ -272,198 +241,169 @@ The results are served by a REST API and displayed in a web dashboard. Its centr
 
 \subsection{Anomaly Detection Results}
 
-Table~\ref{tab:split_metrics} reports the score statistics per window. By construction, 2.02\% of training transactions are flagged (49 of 2,431). The rate stays close to the target on validation (2.32\%, 7 of 302) but rises to 6.79\% on test (38 of 560). Fig.~\ref{fig:score_threshold} shows why: the test distribution has a heavier right tail than the training one, with a 99th percentile of 0.957 versus 0.776, and a visible cluster of transactions with scores above 0.9 that is almost absent during training.
+Table~\ref{tab:split_metrics} summarizes each period. By design, 2.02\% of training transactions are flagged. The share stays close to 2\% in validation (2.32\%) but jumps to 6.79\% in test, where the highest scores are also clearly higher. Over the whole dataset, 108 transactions (3.28\%) are flagged; together they account for 9.5\% of all the money transacted, so flagged transactions tend to be large.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.2}
-\caption{Anomaly Score Statistics per Window ($\tau = 0.710$)}
+\caption{Results per Period (Threshold = 0.710)}
 \label{tab:split_metrics}
 \centering
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrr}
 \hline
-\textbf{Window} & \textbf{$n$} & \textbf{Flag.} & \textbf{Rate} & \textbf{Mean} & \textbf{P95} & \textbf{P99} \\
+\textbf{Period} & \textbf{Transactions} & \textbf{Flagged} & \textbf{Rate} & \textbf{Avg. score} \\
 \hline
-Train      & 2,431 & 49 & 2.02\% & 0.361 & 0.625 & 0.776 \\
-Validation &   302 &  7 & 2.32\% & 0.424 & 0.639 & 0.855 \\
-Test       &   560 & 38 & 6.79\% & 0.423 & 0.746 & 0.957 \\
+Train      & 2,431 & 49 & 2.02\% & 0.36 \\
+Validation &   302 &  7 & 2.32\% & 0.42 \\
+Test       &   560 & 38 & 6.79\% & 0.42 \\
 \hline
 \end{tabular}
 \end{table}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig03_score_threshold.pdf}
-\caption{Anomaly score distribution of the training (filled) and test (outline) windows, normalized to equal area. The dashed line is the operating threshold fixed on training data. The test tail beyond the threshold is clearly heavier.}
-\label{fig:score_threshold}
-\end{figure}
-
-When the entire dataset is scored with the final model, which is the view used by the map and the dashboard, 108 transactions (3.28\%) are flagged. They account for \$93,262.77, that is, 9.5\% of the \$981,758.06 transacted, so flagged transactions concentrate roughly three times their share of value.\footnote{In the full-dataset view, account-level features are recomputed over all rows, so the per-window counts (58/10/40) differ slightly from the protocol counts (49/7/38) of Table~\ref{tab:split_metrics}. All protocol metrics use the latter.}
-
 \subsection{Temporal Distribution Shift}
 
-The test rate is 3.4 times both the contamination target and the training rate, even though the model and the threshold are unchanged (Fig.~\ref{fig:split_rates}). This shift is not an artifact of seed 42: when the model is refit with seeds 42--51, each with its own training threshold, the test rate ranges from 4.64\% to 6.79\% (mean 5.54\%), always well above 2\%.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig04_split_rates.pdf}
-\caption{Share of flagged transactions per window for the main model. The dashed line is the 2\% contamination target; the error bar on the test bar spans the rates obtained with the ten seeds.}
-\label{fig:split_rates}
-\end{figure}
-
-Breaking the rate down by month shows that the drift is gradual rather than abrupt (Fig.~\ref{fig:monthly}). From January to July 2023, the monthly flagged rate stays between 1.7\% and 1.9\%; it then increases to 3.2\% in August and 5.3\% in September, both still inside the training window, and reaches 6.8\% in November and 7.5\% in December. The mean score follows the same pattern (0.35--0.37 from January to July versus 0.42--0.44 from October to December). Validation, with a 2.32\% rate, sits on the transition. The shift therefore starts before the test window and accumulates over time; a cutoff estimated on January--October data averages over months with very different score levels.
+The test rate is 3.4 times the 2\% target, even though nothing in the model changed. This is not luck with one seed: retraining with ten different seeds gives test rates between 4.6\% and 6.8\%, always well above 2\%. Looking month by month (Fig.~\ref{fig:monthly}), the rate stays below 2\% from January to July, rises in August (3.2\%) and September (5.4\%), and reaches 6.8\% in November and 7.5\% in December. In other words, the scores increase gradually and the change starts before the test period. This is the behavior that the fraud literature describes as concept drift: transaction patterns change over months, so a model fixed on the past slowly loses calibration \cite{dalpozzolo2018realistic,gama2014survey}.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig05_monthly_drift.pdf}
-\caption{Monthly share of flagged transactions with the final model, colored by window (months with fewer than 20 transactions omitted). The rate is flat until July and rises steadily from August onward.}
+\caption{Share of flagged transactions per month. The rate is flat until July and rises from August onward; the dashed line is the 2\% target.}
 \label{fig:monthly}
 \end{figure}
 
-\subsection{Effect of the Synthetic Coverage Rows}
+\subsection{Effect of the Synthetic Rows}
 \label{sec:res_synthetic}
 
-Although the synthetic rows were added only for map coverage, the model flags them far more often than real rows: 7.30\% (57 of 781) versus 2.03\% (51 of 2,512) on the full dataset. Fig.~\ref{fig:real_synth} shows that this gap appears in every window, which is consistent with the jitter and the small, newly created account pools producing combinations that are rare in training and therefore easy to isolate.
-
-Crucially, the temporal shift persists when only real transactions are considered: their flagged rate grows from 1.5\% in training to 2.3\% in validation and 4.2\% in test, a 2.8-fold increase. The synthetic rows amplify the drift (5.3\% to 16.5\%) but do not create it.
+Although the synthetic rows were added only to fill the map, the model flags them much more often: 7.3\% versus 2.0\% for real transactions. This happens in every period (Fig.~\ref{fig:real_synth}), probably because the small perturbations create combinations the model has rarely seen; synthetic data is only as faithful as the process that generates it \cite{jordon2022synthetic}. The increase over time, however, is also present in real transactions alone, which go from 1.5\% in training to 4.2\% in test. The synthetic rows make the change larger, but they do not cause it.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig06_real_vs_synthetic.pdf}
-\caption{Share of flagged transactions per window for real and synthetic rows. Synthetic rows are flagged more often in every window, but the rise from training to test is also present in real rows alone.}
+\caption{Share of flagged transactions for real and synthetic rows in each period.}
 \label{fig:real_synth}
 \end{figure}
 
 \subsection{Stability and Robustness}
 
-Across the 45 seed pairs, the mean Jaccard similarity of the flagged sets is 0.689 (median 0.686, s.d. 0.065, range 0.568--0.862), while the mean Spearman correlation of the scores is 0.899 (median 0.901, s.d. 0.014, range 0.869--0.926). The two distributions do not overlap (Fig.~\ref{fig:stability}a): the model agrees much more on \emph{how unusual} each transaction is than on \emph{which} transactions cross a hard cutoff, and its ranking is also less sensitive to the seed, as the standard deviation of $\rho$ is almost five times smaller.
+The ten runs agree much more on the \emph{order} of the transactions than on \emph{which} ones are flagged (Fig.~\ref{fig:stability}a): the average Spearman correlation is 0.90, while the average Jaccard similarity is 0.69. In the test set, 508 of the 560 transactions are never flagged and 52 are flagged at least once (Fig.~\ref{fig:stability}b). Of those 52, 21 are borderline cases flagged in only one to four runs, while \textbf{16 transactions are flagged in all ten runs}. These 16 all have very high scores and are the most reliable anomalies the model produces; the borderline cases sit close to the threshold, which is where the disagreement between runs happens. Some of this variation is expected: the random, axis-parallel cuts of Isolation Forest add noise to the scores, and variants with random-slope cuts were proposed precisely to reduce it \cite{hariri2021extended}.
 
-Of the 560 test transactions, 508 (90.7\%) are never flagged and 52 (9.3\%) are flagged at least once. Among these 52, the stability distribution is bimodal (Fig.~\ref{fig:stability}b): 21 are borderline cases flagged in one to four runs, while 26 are flagged in at least eight runs and \textbf{16 (2.86\% of the test window) are flagged in all ten runs}. The median conditional stability is 0.75 (mean 0.596). Table~\ref{tab:stability} summarizes these cut-offs. The 16 transactions flagged in every run form the most defensible anomaly set produced by the model; Fig.~\ref{fig:score_vs_stab} in the Appendix shows that they all have mean scores above 0.80, whereas the borderline cases spread between 0.58 and 0.84, i.e., around the per-seed thresholds (0.67--0.78).
-
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/fig07_stability.pdf}
-\caption{Stability across ten seeds. (a) Distribution of pairwise agreement over the 45 seed pairs: Jaccard similarity of flagged sets versus Spearman correlation of scores. (b) Number of runs in which each of the 52 ever-flagged test transactions is flagged; 16 are flagged in every run.}
+\includegraphics[width=\columnwidth]{figures/fig07_stability.pdf}
+\caption{Stability over ten seeds. (a) Agreement between pairs of runs: the ranking (Spearman) agrees more than the flagged set (Jaccard). (b) How many times each flagged test transaction was flagged.}
 \label{fig:stability}
-\end{figure*}
-
-\begin{table}[!t]
-\renewcommand{\arraystretch}{1.2}
-\caption{Per-Transaction Stability on the Test Window ($n=560$)}
-\label{tab:stability}
-\centering
-\begin{tabular}{lrr}
-\hline
-\textbf{Flagged in} & \textbf{Transactions} & \textbf{\% of test} \\
-\hline
-All 10 runs ($=100\%$)  & 16 & 2.86\% \\
-$\geq 8$ runs ($\geq 80\%$) & 26 & 4.64\% \\
-$\geq 5$ runs ($\geq 50\%$) & 31 & 5.54\% \\
-$\geq 1$ run ($> 0\%$)      & 52 & 9.29\% \\
-\hline
-\end{tabular}
-\end{table}
+\end{figure}
 
 \subsection{Behavioral Patterns}
 
-Table~\ref{tab:contrast} and Fig.~\ref{fig:contrast} compare flagged and normal transactions in the test window. The five largest standardized gaps all concern the amount: flagged transactions average \$877.60 versus \$272.98 for normal ones (gap 1.94), and they are also large \emph{relative to their context}, i.e., to their hour (1.93), state (1.92), and merchant (1.87), and relative to the account balance (1.83). The deviation from the account's own history (0.99) is smaller but still positive. The largest non-amount gap is the weekend indicator (34\% of flagged transactions versus 4\% of normal ones), followed by occupation \textit{Student}, night-time, and login attempts (1.45 versus 1.07 on average). Flagged transactions also occur earlier in the day (12.6 h versus 15.6 h on average) and on accounts with lower balances.
-
-\begin{table}[!t]
-\renewcommand{\arraystretch}{1.2}
-\caption{Largest Standardized Gaps, Flagged vs. Normal (Test)}
-\label{tab:contrast}
-\centering
-\begin{tabular}{lrrr}
-\hline
-\textbf{Feature} & \textbf{Flagged} & \textbf{Normal} & \textbf{Gap} \\
-\hline
-TransactionAmount       & 877.60 & 272.98 & 1.94 \\
-Amount\_Dev\_Hour       & 2.180 & $-0.067$ & 1.93 \\
-Amount\_Dev\_USState    & 2.124 & $-0.075$ & 1.92 \\
-Amount\_Dev\_MerchantID & 2.717 & $-0.051$ & 1.87 \\
-Amount\_To\_Balance\_Ratio & 1.264 & 0.127 & 1.83 \\
-Is\_Weekend             & 0.342 & 0.038 & 1.29 \\
-Log\_Transaction\_Amount & 6.351 & 5.073 & 1.00 \\
-Amount\_Dev\_Account    & 4.941 & 0.592 & 0.99 \\
-\hline
-\end{tabular}
-\end{table}
+Flagged transactions are, above all, large (Fig.~\ref{fig:contrast}). They average \$878 against \$273 for normal ones, and they are also large \emph{for their context}: compared with other transactions at the same hour, in the same state, at the same merchant, and relative to the account balance. The five biggest differences are all related to the amount. This is compared with previous fraud studies in Section~\ref{sec:comparison}. The next ones are weekend timing (34\% of flagged transactions versus 4\% of normal ones), student customers, night-time, and a few more login attempts.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig08_feature_contrast.pdf}
-\caption{Top ten standardized gaps between flagged and normal test transactions. Dark bars are amount or balance features.}
+\caption{Largest differences between flagged and normal test transactions, in standard deviations. Dark bars are amount-related features.}
 \label{fig:contrast}
 \end{figure}
 
 \subsection{Temporal Activity Patterns}
 
-Over the full dataset, the anomaly rate depends strongly on when a transaction occurs (Fig.~\ref{fig:temporal}). Transactions between 00:00 and 04:59 are flagged at 19.2\% (29 of 151), against 2.4\% between 06:00 and 23:59. Weekend transactions are flagged at 16.9\% on Saturday (20 of 118) and 18.8\% on Sunday (18 of 96), while every weekday stays between 1.5\% and 3.2\%. Both slots are \emph{rare} in the data: transactions between 00:00 and 04:59 and weekend transactions represent only 4.6\% and 6.5\% of all records, respectively. This is consistent with how Isolation Forest works, since rare values are isolated with few cuts, and should be read as rarity rather than as risk. By category, credit transactions are flagged more often than debit ones (6.0\% vs. 2.5\%), and students more often than the other occupations (5.9\% vs. 2.3--2.4\%); by channel, the rate is 3.8\% at branches, 3.7\% online, and 2.3\% at ATMs.
+Over the whole dataset, transactions made between midnight and 5 a.m. are flagged 19\% of the time, against 2.4\% for the rest of the day, and weekend transactions are flagged 17--19\% of the time, against 1.5--3.2\% on weekdays (Fig.~\ref{fig:temporal}). Both groups are rare (about 5\% and 7\% of all transactions), and Isolation Forest isolates rare things easily, so this reflects rarity more than risk: anomalies are, by definition, ``few and different'' \cite{liu2008isolation}. Section~\ref{sec:comparison} compares this pattern with published fraud data.
 
-\begin{figure*}[!t]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/fig10_temporal.pdf}
-\caption{Share of flagged transactions by (a) hour of day and (b) day of week over the full dataset. Dark bars mark the early-morning hours and the weekend; the dashed line is the 2\% target.}
+\includegraphics[width=\columnwidth]{figures/fig10_temporal.pdf}
+\caption{Share of flagged transactions by (a) hour of day and (b) day of week. Dark bars mark early-morning hours and weekends.}
 \label{fig:temporal}
-\end{figure*}
+\end{figure}
 
 \subsection{Feature Importance and Interpretability}
 \label{sec:res_shap}
 
-Fig.~\ref{fig:shap} shows the 15 features with the largest mean absolute SHAP value. The most influential are \texttt{Month} (0.147), \texttt{USState\_Texas} (0.143), \texttt{TransactionType\_Debit} (0.130), \texttt{Amount\_Dev\_Account} (0.113), and \texttt{USState\_California} (0.113), followed by three occupation indicators (0.083--0.091), the state frequency (0.083), and \texttt{USState\_Arizona} (0.081). The importance spans five categories (temporal, geographic, transaction type, account-relative amount, and demographic), and the largest value is only 0.147, with the fifteenth still at 0.059: no single variable dominates.
+According to SHAP (Fig.~\ref{fig:shap}), the features that move the score the most are the month, being in Texas, being a debit transaction, how unusual the amount is for the account, and being in California, followed by occupation and other states. The influence is spread over five kinds of features (time, location, transaction type, amount, and customer profile), and no feature dominates. This differs from the previous section because the two analyses answer different questions: the behavioral comparison describes the few flagged transactions, while SHAP describes what moves the score of \emph{all} transactions. Being in a large state or making a debit transaction is very common, so it lowers the score of most transactions. The month appears first because the test months come after the training months, which fits the shift over time described above.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig09_shap.pdf}
-\caption{Top 15 features by mean absolute SHAP value, shaded by category. Importance is spread across temporal, geographic, transaction-type, amount, and demographic features.}
+\caption{The 15 most influential features according to SHAP, grouped by type.}
 \label{fig:shap}
 \end{figure}
 
-SHAP importance and the behavioral gaps answer different questions. The gaps describe what separates the few flagged transactions from the rest, while SHAP measures what moves the score of \emph{every} transaction. One-hot indicators of the largest states (Texas, California, and Arizona, with 346, 357, and 183 transactions) and of the debit type (77\% of records) carry large SHAP values because belonging to a common category lowers the score of most transactions, not because they mark anomalies. \texttt{Month} is the most important feature: since the training window ends in early October, the test months lie at or beyond the edge of the range seen in training, which is consistent with the drift reported above. This is a plausible mechanism, not a tested one.
-
 \subsection{Heuristic Sanity Check}
 
-The model was also compared with a transparent hand-built rule that scores high amount, many login attempts, unusual hour, and extreme session duration. On the test window, the Spearman correlation between the two scores is 0.473, and 9.1\% of the top-flagged transactions overlap. The moderate positive correlation indicates that the model is not arbitrary with respect to basic intuition, while the low overlap indicates that it captures more than these four rules. This check is \emph{not} ground truth and is not a second validation of the same kind as the analyses above.
+The model's scores show a moderate agreement with the simple hand-made rule (Spearman correlation 0.47), but the two share only 9\% of their top transactions. The model is therefore consistent with basic intuition without being a copy of it. This is only a sanity check, not proof that the model is right.
 
 \subsection{Geographic Analysis}
 
-All 52 states in the data were reconciled with the GeoJSON file (0 unmatched), and on the full dataset every state clears the 15-transaction floor, so the map (Fig.~\ref{fig:state_map}) has support everywhere it shows a value. The highest rates are found in Connecticut (16.7\%, 6 of 36), Alaska and West Virginia (15.0\%, 3 of 20 each), Kansas (13.8\%, 4 of 29), and Minnesota (10.5\%, 6 of 57), as listed in Table~\ref{tab:states}. The largest states lie close to the target: Texas at 2.9\% (10 of 346) and California at 2.8\% (10 of 357), while 11 states have no flagged transaction at all.
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=0.85\textwidth]{figures/fig11_state_map.pdf}
-\caption{Share of flagged transactions per state on the full dataset (static version of the interactive map). Darker states have higher rates. Every darkest state is covered only by synthetic rows (compare with Fig.~\ref{fig:dataset_map}).}
-\label{fig:state_map}
-\end{figure*}
-
-\begin{table}[!t]
-\renewcommand{\arraystretch}{1.2}
-\caption{States with the Highest Anomaly Rate (Full Dataset)}
-\label{tab:states}
-\centering
-\begin{tabular}{lrrrc}
-\hline
-\textbf{State} & \textbf{$n$} & \textbf{Flag.} & \textbf{Rate} & \textbf{Rows} \\
-\hline
-Connecticut   & 36 & 6 & 16.67\% & Synthetic \\
-Alaska        & 20 & 3 & 15.00\% & Synthetic \\
-West Virginia & 20 & 3 & 15.00\% & Synthetic \\
-Kansas        & 29 & 4 & 13.79\% & Synthetic \\
-Minnesota     & 57 & 6 & 10.53\% & Synthetic \\
-\hline
-Texas         & 346 & 10 & 2.89\% & Real \\
-California    & 357 & 10 & 2.80\% & Real \\
-\hline
-\end{tabular}
-\end{table}
-
-Two facts show that this pattern cannot be read as geographic risk. First, the rate falls with the number of transactions in a state (Spearman $\rho=-0.39$, $p=0.004$ over the 52 states; Fig.~\ref{fig:state_support}): the 20 states with at most 40 transactions are flagged at 7.9\% on aggregate, whereas the 7 states with at least 100 are flagged at 2.2\%. Small denominators produce extreme rates, as in Connecticut, whose 16.7\% rests on six transactions. Second, \emph{all twelve} states with the highest rates are covered only by synthetic rows. Taken together, synthetic states are flagged at 7.3\% and real ones at 2.0\%, so the geographic contrast in the map largely reflects the augmentation described in Section~\ref{sec:augmentation} rather than any regional behavior. A second cut restricted to the stable anomalies of the test window was also computed but is not reported, because only 7 of 51 states reach the support floor on those 560 rows.
+On the map (Fig.~\ref{fig:state_map}), the states with the highest rates are Connecticut (17\%), Alaska and West Virginia (15\%), Kansas (14\%), and Minnesota (11\%), while the largest states, Texas and California, are close to 3\%. Two facts show that this is not a regional risk pattern. First, states with fewer transactions show more extreme rates: Connecticut's 17\% comes from just 6 transactions out of 36, while the 20 states with 40 transactions or fewer are flagged 7.9\% of the time on average, against 2.2\% for the 7 states with 100 or more. This is a well-known statistical effect: rates computed on small groups vary much more, so both the highest and the lowest values on a map tend to appear in the smallest areas \cite{wainer2007dangerous}. Second, \emph{all twelve} states with the highest rates are covered only by synthetic rows. The map therefore mostly reflects sample size and the added rows, not real geographic behavior.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{figures/fig12_state_support.pdf}
-\caption{State anomaly rate versus number of transactions (log scale). The highest rates belong to small states covered only by synthetic rows; large real-data states sit close to the 2\% line.}
-\label{fig:state_support}
+\includegraphics[width=\columnwidth]{figures/fig11_state_map.pdf}
+\caption{Share of flagged transactions per state (static version of the interactive map). Darker means a higher rate.}
+\label{fig:state_map}
 \end{figure}
+
+% ==========================================================
+% COMPARISON WITH PREVIOUS STUDIES (new)
+% ==========================================================
+
+\section{Comparison with Previous Studies}
+\label{sec:comparison}
+
+This section compares each main result with what previous studies have reported. Two points guide the comparison. First, most of these studies describe confirmed or attempted fraud, while our model describes unusual transactions; agreement therefore supports the plausibility of a pattern, not its interpretation as fraud. Second, where possible we compare like with like: the share of all transactions that falls in a group versus the share of fraud (or, for us, of flagged transactions) that falls in it. Table~\ref{tab:comparison} summarizes the comparison.
+
+\subsection{Night Hours}
+
+Afriyie et al. \cite{afriyie2023supervised}, who analyzed 555,719 labeled credit card transactions from the western United States (a public dataset generated with a transaction simulator), found that fraud was concentrated between 22:00 and 04:00. Industry data from Accertify, covering 576 million retail transactions processed during the Cyber Week periods of 2021 to 2025, give the same picture in numbers: the window from 22:00 to 04:00 held 12.7\% of all transactions but 19.7\% of attempted fraud, and the overnight fraud rate was on average 2.1 times the midday rate \cite{accertify2026cyber}. Stripe likewise reported that fraud peaks late at night while legitimate traffic peaks during working hours \cite{woodward2017stripe}. In our data the same window (22:00--04:59) holds 6.5\% of all transactions but 29.6\% of flagged ones, and its flagged rate (15.0\%) is about 5 times the midday rate (2.8\% between 11:00 and 13:59). Our results therefore point in the same direction as the published evidence, but with a stronger concentration. A likely reason is that in our dataset night transactions are much rarer than in retail data (79\% of our transactions occur between 16:00 and 18:59), and Isolation Forest isolates rare values easily \cite{liu2008isolation}.
+
+\subsection{Weekends}
+
+According to Stripe, fraud rises on quiet days with little legitimate activity, rather than on busy shopping days \cite{woodward2017stripe}. Accertify did not compare weekend and weekday fraud rates directly, but found that, in 2025, the fraud-to-legitimate cart value ratio reached 2.56 on both Saturday and Sunday \cite{accertify2026cyber}. In the simulated data of Afriyie et al., Sunday was the day with the largest number of fraudulent transactions (372), although this is a count and not a rate \cite{afriyie2023supervised}. In our data the weekend is the quietest period: it holds only 6.5\% of all transactions but 35.2\% of flagged ones, with a flagged rate of 17.8\% against 2.3\% on weekdays. This agrees with Stripe's observation about quiet days. However, the published evidence on weekends is weaker and less direct than for night hours, so we treat this agreement with more caution.
+
+\subsection{Transaction Amount}
+
+Whitrow et al. \cite{whitrow2009aggregation} showed that summarizing each customer's recent behavior, instead of looking at each transaction alone, improves fraud detection in many (though not all) settings, and Correa Bahnsen et al. \cite{bahnsen2016feature} extended this idea by comparing each transaction with the customer's previous ones, including the usual time of day. Afriyie et al. also observed that fraudulent transactions had a much higher median amount than legitimate ones \cite{afriyie2023supervised}. Our results agree: the five largest differences between flagged and normal transactions are all amount features measured \emph{relative to their context} (hour, state, merchant, and account balance). Flagged transactions average \$878 against \$273 for normal ones, and although they are only 3.3\% of all transactions, they account for 9.5\% of all the money transacted.
+
+\subsection{Customer Profile}
+
+Here our results differ from the literature. Afriyie et al. found that cardholders over 60 were the most frequent victims of fraud \cite{afriyie2023supervised}. In our data, retired customers are flagged at an average rate (2.4\%), while students stand out (5.9\% against 2.3--2.4\% for the other occupations). The difference is not a contradiction: Afriyie et al. measured who \emph{suffers} fraud, while our model measures whose transactions are \emph{unusual}, and flagged transactions also come from accounts with lower balances, where an ordinary purchase is large relative to the account.
+
+\subsection{Change over Time}
+
+Dal Pozzolo et al. \cite{dalpozzolo2018realistic}, working with more than 75 million real card transactions over three years, identified concept drift as one of the main challenges of fraud detection, because customer habits and fraud strategies change over time; Gama et al. \cite{gama2014survey} reviewed methods to adapt models to it, and Lucas and Jurgovsky \cite{lucas2020survey} add that buying habits also change with the seasons. Our results show the same effect on a smaller scale: with a threshold fixed on past data, the flagged rate grows from 2.0\% in training to 6.8\% in the test months, and from 1.5\% to 4.2\% when only real transactions are considered. As these studies recommend, the threshold should be updated periodically rather than fixed once.
+
+\subsection{Stability across Runs}
+
+Kalousis et al. \cite{kalousis2007stability} proposed evaluating the stability of an algorithm by how much its rankings and selected sets change when the training is perturbed, which is the approach we follow. Hariri et al. \cite{hariri2021extended} showed that the axis-parallel cuts of Isolation Forest make its scores more variable, and that random-slope cuts reduce this variance. This matches our result: the ranking of transactions is very consistent across seeds (Spearman 0.90), while the exact flagged set changes more (Jaccard 0.69), because the variation affects the transactions closest to the threshold.
+
+\subsection{Geography}
+
+Wainer \cite{wainer2007dangerous} showed, with US county maps of kidney cancer rates, that both the highest and the lowest rates appear in the counties with the smallest populations, simply because rates computed on few cases vary more. Our state map shows the same effect: the anomaly rate decreases with the number of transactions per state (Spearman $\rho=-0.39$, $p=0.004$), the 20 states with 40 transactions or fewer are flagged at 7.9\% on aggregate against 2.2\% for the 7 states with 100 or more, and the largest states, Texas (2.9\%) and California (2.8\%), are close to the 2\% target. In addition, all twelve states with the highest rates contain only synthetic rows, which is consistent with the warning that synthetic data does not always behave like real data \cite{jordon2022synthetic}.
+
+\subsection{Unsupervised Detection}
+
+Finally, Niu et al. \cite{niu2019comparison} compared supervised and unsupervised models on labeled card data and found that the best unsupervised model reached an AUC of 0.961, close to the 0.989 of the best supervised one. Goldstein and Uchida \cite{goldstein2016comparative} found that global detectors are a safe default when the type of anomaly is unknown. Both results support our choice of an unsupervised, global method such as Isolation Forest when no labels are available, although, without labels, we cannot measure its accuracy as these studies did.
+
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.15}
+\caption{Our Results Compared with Previous Studies}
+\label{tab:comparison}
+\centering
+\footnotesize
+\begin{tabular}{p{0.17\columnwidth}p{0.33\columnwidth}p{0.30\columnwidth}p{0.08\columnwidth}}
+\hline
+\textbf{Topic} & \textbf{Previous studies} & \textbf{This work} & \textbf{Agree?} \\
+\hline
+Night hours & 22--04 h: 12.7\% of transactions, 19.7\% of fraud \cite{accertify2026cyber}; fraud concentrated at 22--04 h \cite{afriyie2023supervised} & 22--04 h: 6.5\% of transactions, 29.6\% of flagged & Yes \\
+Weekends & Fraud rises on quiet days \cite{woodward2017stripe}; most frauds on Sunday \cite{afriyie2023supervised} & 6.5\% of transactions, 35.2\% of flagged & Partly \\
+Amount & Customer-relative features help \cite{whitrow2009aggregation,bahnsen2016feature} & Top 5 differences are amount vs. context & Yes \\
+Profile & Victims over 60 most frequent \cite{afriyie2023supervised} & Students flagged most (5.9\%) & No \\
+Time & Concept drift in fraud \cite{dalpozzolo2018realistic,gama2014survey} & 2.0\% $\rightarrow$ 6.8\% flagged & Yes \\
+Stability & IF scores vary with cuts \cite{hariri2021extended} & Ranking 0.90 vs. set 0.69 & Yes \\
+Geography & Small areas show extreme rates \cite{wainer2007dangerous} & Small states: 7.9\% vs. 2.2\% & Yes \\
+Method & Unsupervised AUC 0.961 vs. 0.989 \cite{niu2019comparison} & No labels to measure AUC & -- \\
+\hline
+\end{tabular}
+\end{table}
 
 % ==========================================================
 % 7. DISCUSSION
@@ -473,42 +413,31 @@ Two facts show that this pattern cannot be read as geographic risk. First, the r
 
 \subsection{Interpretation of the Results}
 
-The results support the general hypothesis: without a single label, the model yields an anomaly ranking that is reproducible, a set of flagged transactions with a clear behavioral signature, and limitations that can be measured rather than assumed. Each analysis also explains part of the others. The stability analysis shows that the \emph{score} is the reliable output and the \emph{flag} is the fragile one, because flags depend on where a threshold cuts a continuous ranking. The temporal analysis shows that this threshold is also the component that degrades over time. Together, they suggest that, in an operational setting, transactions should be prioritized by score, and the cutoff should be treated as an adjustable review budget rather than as a property of the model.
+The results support the general hypothesis: without a single label, the model produces a consistent ranking of unusual transactions, a clear profile of what makes them unusual, and limitations that can be measured. The most useful output of the model is the \emph{score}, not the yes/no flag. The ranking is stable, while the flag depends on where the threshold cuts and is also the part that degrades over time. In practice, this suggests reviewing transactions in order of score and treating the threshold as a review budget that must be updated periodically.
 
-\textit{Temporal drift.} The monthly view moves the discussion from ``the test window is different'' to ``the score level rises steadily from August.'' Without labels, it is impossible to tell whether this reflects changing customer behavior, a seasonal effect (the dataset covers a single year, so seasonality cannot be separated from trend), the edge effect of \texttt{Month}, or noise in a small sample. What can be stated is that a fixed, train-derived cutoff over-flags later periods, by a factor of 2.8 in real rows and 3.4 overall.
-
-\textit{Behavioral interpretation.} The behavioral contrast is the most intuitive result: flagged transactions are large, and large \emph{for their context}. This agrees with what an analyst would examine first, and with the moderate correlation to the hand-built rule. Weekend and early-morning timing are the strongest secondary signals, but both are rare slots, so they mainly indicate what Isolation Forest considers unusual, which is not necessarily what is risky.
-
-\textit{Geographic patterns.} The map does what it was designed to do, namely show every state, but the audit shows that its most striking colors come from small samples and from synthetic rows. This is an important methodological lesson: data added for presentation purposes is not neutral once it passes through the model.
+The shift over time is the clearest limitation. Without labels we cannot tell whether it comes from real changes in customer behavior, from seasonal effects (we only have one year), or from the small sample, but we can see that it starts in August and grows steadily. The behavioral result is the most intuitive one: flagged transactions are large, and large for their context. Finally, the map shows every state as intended, but its strongest colors come from small samples and synthetic rows, a reminder that data added for presentation is not neutral once it enters the model.
 
 \subsection{Hypothesis Evaluation}
-\label{sec:hypothesis_eval}
 
-Table~\ref{tab:hypotheses} summarizes the evidence for each hypothesis.
+Section~\ref{sec:comparison} showed that five of the eight main results agree with previous studies, one agrees only partly, one differs, and one cannot be checked without labels. Table~\ref{tab:hypotheses} summarizes the hypotheses. All five are supported; H5 even more than expected, because the synthetic rows add a second reason, besides sample size, why the geographic pattern cannot be read as risk.
 
-\begin{table*}[!t]
-\renewcommand{\arraystretch}{1.25}
-\caption{Evaluation of the Hypotheses}
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.2}
+\caption{Hypothesis Evaluation}
 \label{tab:hypotheses}
 \centering
-\begin{tabular}{p{0.20\textwidth}p{0.55\textwidth}p{0.15\textwidth}}
+\begin{tabular}{lp{0.52\columnwidth}l}
 \hline
-\textbf{Hypothesis} & \textbf{Evidence} & \textbf{Outcome} \\
+\textbf{H} & \textbf{Main evidence} & \textbf{Result} \\
 \hline
-H1: ranking more stable than flag & Spearman 0.899 vs. Jaccard 0.689 (non-overlapping distributions); bimodal per-transaction stability: 21 borderline vs. 16 always flagged & Supported \\
-H2: fixed threshold does not transfer & 2.02\% $\rightarrow$ 2.32\% $\rightarrow$ 6.79\%; 4.64--6.79\% across seeds; real rows only: 1.5\% $\rightarrow$ 4.2\%; drift starts in August & Supported \\
-H3: amount-driven differences & Top five gaps are amount features (1.83--1.94); weekend is the largest non-amount gap (1.29) & Supported \\
-H4: multifactorial anomaly & Five feature categories in the SHAP top 15; maximum importance 0.147 & Supported \\
-H5: geography is descriptive & Rate vs. support $\rho=-0.39$; top 12 states are synthetic; 7.3\% synthetic vs. 2.0\% real & Supported, with an added confound \\
+H1 & Ranking agreement 0.90 vs. flag agreement 0.69; 16 always flagged & Supported \\
+H2 & 2.0\% $\rightarrow$ 2.3\% $\rightarrow$ 6.8\%; also in real rows & Supported \\
+H3 & Top five differences are all amount-related & Supported \\
+H4 & Five feature types in the SHAP top 15 & Supported \\
+H5 & Small and synthetic states have the highest rates & Supported \\
 \hline
 \end{tabular}
-\end{table*}
-
-H3 and H4 may appear to be in tension, since amount dominates the contrast but not SHAP. As explained in Section~\ref{sec:res_shap}, they measure different things: the contrast describes the extreme tail, whereas SHAP describes the score of the whole population. H5 is supported more strongly than anticipated, because, in addition to the expected sample-size effect, the synthetic rows act as a confounder that was not part of the original hypothesis.
-
-\subsection{Implications of Using Unsupervised Anomaly Detection}
-
-The framework shows that useful, falsifiable statements can be made about an unlabeled model: stability, temporal transfer, behavioral coherence, and geographic support can all be checked without any fraud label. In return, the framework cannot measure whether flagged transactions are fraudulent. Its natural role is therefore to \emph{prioritize} cases for human review, as a first filter whose output is checked by analysts and, eventually, converted into the labels that a supervised model would require.
+\end{table}
 
 % ==========================================================
 % 8. LIMITATIONS
@@ -516,24 +445,7 @@ The framework shows that useful, falsifiable statements can be made about an unl
 
 \section{Limitations}
 
-\begin{enumerate}
-    \item \textit{No ground-truth fraud labels.} Every result is a statement about statistical unusualness relative to the training distribution, never about confirmed fraud, and supervised metrics cannot be computed.
-    \item \textit{Anomalies cannot be interpreted as confirmed fraud.} Rare but legitimate behavior, such as weekend or early-morning transactions, is flagged for being rare.
-    \item \textit{Temporal distribution shift.} A single train-derived cutoff over-flags later periods by a factor of 2.8--3.4. With only one year of data, drift and seasonality cannot be separated, and the 60-day test window is short.
-    \item \textit{Sensitivity of binary thresholding.} Jaccard alone (0.689) would understate the consistency of the model; the instability concentrates at the cutoff, not in the ranking.
-    \item \textit{Synthetic rows.} 781 of the 3,293 rows (23.7\%) are synthetic and were added for map coverage. They are flagged 3.6 times more often than real rows and they influence the model, the feature statistics, and especially the geographic results.
-    \item \textit{Geographic support limitations.} Many states have only 20--40 transactions, and only 7 of 51 states reach the support floor in the test window, so no state-level robustness claim can be made.
-    \item \textit{Dataset-specific findings.} The dataset is small (560 test transactions), and the gaps and importances should be read as descriptive, not as precise estimates.
-    \item \textit{Need for external validation.} The heuristic comparison is only a sanity check; validating the framework requires labeled data, analyst feedback, or a second dataset.
-\end{enumerate}
-
-% ==========================================================
-% 8b. REPRODUCIBILITY  (new section)
-% ==========================================================
-
-\section{Reproducibility}
-
-All results come from a single, versioned pipeline. Training and artifact generation are run with \texttt{python -m scripts.train\_pipeline}, and the figures in this paper with \texttt{python -m paper.make\_figures}, which re-runs the unchanged model (seed 42) and checks that its threshold matches the stored artifacts. The dataset augmentation is reproduced with \texttt{python -m scripts.augment\_dataset} (seed 42). The model configuration (300 trees, contamination 0.02) was fixed before the analysis and was not modified in response to any result reported here.
+The main limitation is the lack of fraud labels: flagged transactions are unusual, not confirmed fraud, and rare but legitimate behavior (such as weekend purchases) is flagged too. A fixed threshold does not hold over time, and with a single year of data the shift cannot be separated from seasonality. About a quarter of the data (781 rows) is synthetic and influences the results, especially by state. Many states have few transactions, and the test period has only 560, so all numbers should be read as descriptive. Validating the approach would require labeled data, feedback from analysts, or a second dataset.
 
 % ==========================================================
 % 9. CONCLUSION
@@ -541,11 +453,91 @@ All results come from a single, versioned pipeline. Training and artifact genera
 
 \section{Conclusion}
 
-This work reformulated financial fraud detection as an unsupervised anomaly detection problem, motivated by the absence of fraud labels in the available data. An Isolation Forest trained with a strictly temporal split was used to score 3,293 US bank transactions, and its output was examined from five complementary angles: temporal transfer, stability, behavioral contrast, feature attribution, and geography.
+This work treated fraud detection as a search for unusual transactions, since no fraud labels were available. An Isolation Forest, trained on past data and evaluated on later months, was analyzed from five angles. The ranking of unusual transactions was consistent across ten runs, and 16 test transactions were flagged every time. A threshold fixed on past data flagged three times more transactions in the final months, because scores rise gradually from August, even in real transactions. Flagged transactions stand out mainly because of their amount, while the model as a whole depends on many factors. The geographic pattern on the US map is explained by sample size and by the synthetic rows. All of these results are consistent with previous studies on concept drift, Isolation Forest, fraud features, and small-sample statistics. As future work, we propose updating the threshold periodically, repeating the analysis with real transactions only and with several years of data, comparing other detectors, and using analyst reviews of the most stable anomalies as the first labels for a semi-supervised model.
 
-The main findings are as follows. First, the anomaly ranking is stable across seeds ($\rho=0.899$), while the binary flag is less so (Jaccard $=0.689$), and 16 test transactions form a core flagged under every seed. Second, a threshold fixed on training data does not keep its 2\% rate: it flags 6.79\% of the test window, and the monthly view shows a progressive drift that begins in August and is present even in real transactions alone. Third, flagged transactions are distinguished mainly by amount, both absolute and relative to hour, state, merchant, and balance, while the model's overall notion of anomaly is multifactorial. Fourth, the geographic pattern on the US map is explained by sample size and by the synthetic coverage rows, and must be read descriptively.
+% ==========================================================
+% GLOSSARY (new)
+% ==========================================================
 
-The framework thus makes it possible to identify unusual transactions, quantify how much each flag can be trusted, detect when a threshold stops being valid, and explain what makes a transaction unusual, all without labeled data. Future work includes recalibrating the threshold on a rolling window and monitoring drift explicitly, rerunning the analysis on real transactions only and on multi-year data to separate drift from seasonality, comparing Isolation Forest with other detectors such as LOF and autoencoders, and incorporating analyst feedback to turn the most stable anomalies into the first labels of a semi-supervised model.
+\section{Glossary}
+\label{sec:glossary}
+
+\begingroup
+\footnotesize
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\textbf{Anomaly (outlier):} A data point that is very different from most of the others \cite{chandola2009anomaly}.
+
+\textbf{Anomaly detection:} Finding the data points that do not follow the usual pattern, without being told in advance what is normal or abnormal.
+
+\textbf{Anomaly score:} A number between 0 and 1 given to each transaction; the higher it is, the more unusual the transaction.
+
+\textbf{Choropleth map:} A map in which each region (here, each state) is colored according to a value, such as its anomaly rate.
+
+\textbf{Class imbalance:} When one class is much more common than another; fraud is usually far less than 1\% of all transactions.
+
+\textbf{Concept drift:} A change over time in the patterns of the data, which makes a model trained on the past less accurate \cite{gama2014survey}.
+
+\textbf{Contamination:} The share of transactions the model is expected to flag as anomalous (2\% in this work).
+
+\textbf{Cost-sensitive learning:} Training a model so that expensive mistakes (e.g., missing a fraud) weigh more than cheap ones.
+
+\textbf{Dashboard:} A web page that shows the results with interactive charts and maps.
+
+\textbf{Data leakage:} Using, during training, information that would not be available in real use (such as future data), which makes results look better than they are \cite{kaufman2012leakage}.
+
+\textbf{Decision tree:} A model that decides through a sequence of yes/no questions about the data; Isolation Forest is made of many random trees.
+
+\textbf{Deep learning:} A branch of machine learning that uses neural networks with many layers to learn complex patterns, such as images, text, or networks of accounts.
+
+\textbf{Feature:} A variable describing a transaction, such as its amount or hour. \textit{Feature engineering} is the creation of new, more informative features from the original data.
+
+\textbf{GeoJSON:} A standard file format that stores the shapes of geographic regions, used here to draw the US states.
+
+\textbf{Graph neural network (GNN):} A deep learning model that works on networks, for example accounts connected through shared merchants or devices.
+
+\textbf{Hyperparameter:} A setting chosen before training, such as the number of trees (300) or the contamination (2\%).
+
+\textbf{Isolation Forest:} An anomaly detection model that isolates each point with random cuts; unusual points are isolated with fewer cuts \cite{liu2008isolation}.
+
+\textbf{Jaccard similarity:} A measure from 0 to 1 of how much two sets overlap: the shared elements divided by all distinct elements.
+
+\textbf{Label (ground truth):} The known correct answer for an example, such as ``fraud'' or ``not fraud''; this dataset has none.
+
+\textbf{Machine learning (ML):} A set of methods that let computers learn patterns from data instead of following rules written by hand.
+
+\textbf{One-hot encoding:} Turning a category (such as the state) into several yes/no columns, one per possible value.
+
+\textbf{Precision and recall:} Metrics that need labels: precision is the share of flagged cases that are truly fraud; recall is the share of frauds that are flagged.
+
+\textbf{Random seed:} A number that fixes the random choices of a model so a run can be repeated exactly; changing it gives a slightly different model.
+
+\textbf{Sanity check:} A simple test to confirm that results make basic sense; it is not proof that they are correct.
+
+\textbf{Semi-supervised learning:} Learning from a few labeled examples together with many unlabeled ones.
+
+\textbf{SHAP / Shapley values:} A method that explains a model's output by giving each feature a share of it, based on game theory \cite{lundberg2017unified}.
+
+\textbf{SMOTE:} A technique that creates artificial examples of the rare class to balance the data \cite{chawla2002smote}.
+
+\textbf{Spearman correlation:} A measure from $-1$ to 1 of how similarly two lists are ordered; 1 means exactly the same order.
+
+\textbf{Standard deviation:} A measure of how spread out values are; differences ``in standard deviations'' make features with different units comparable.
+
+\textbf{Supervised learning:} Learning from labeled examples to predict the label of new ones.
+
+\textbf{Support:} The number of transactions behind a statistic; rates with low support are unreliable \cite{wainer2007dangerous}.
+
+\textbf{Synthetic data:} Artificial data generated to imitate real data; here, rows added so that every state appears on the map \cite{jordon2022synthetic}.
+
+\textbf{Temporal split:} Dividing data by date into training (past), validation (recent), and test (most recent) periods.
+
+\textbf{Threshold:} The score above which a transaction is flagged as anomalous (0.710 in this work).
+
+\textbf{Unsupervised learning:} Learning patterns from data without any labels.
+
+\endgroup
 
 %  ==========================================================
 % ACKNOWLEDGMENT
@@ -560,20 +552,5 @@ The authors thank ITESO, Universidad Jesuita de Guadalajara, for providing the a
 % ==========================================================
 
 \printbibliography
-
-% ==========================================================
-% APPENDIX  (new)
-% ==========================================================
-
-\appendices
-
-\section{Score Versus Stability}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\columnwidth]{figures/figA1_score_vs_stability.pdf}
-\caption{Mean anomaly score over the ten seeds versus the fraction of runs in which each test transaction is flagged (small vertical jitter added). Transactions flagged in every run (darkest) all have mean scores above 0.80; partially flagged ones (mid gray) lie around the per-seed thresholds, confirming that flag instability is concentrated near the cutoff.}
-\label{fig:score_vs_stab}
-\end{figure}
 
 \end{document}
