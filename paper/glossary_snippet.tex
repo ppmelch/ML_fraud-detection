@@ -1,0 +1,79 @@
+\section{Glossary}
+\label{sec:glossary}
+
+\begingroup
+\footnotesize
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\textbf{Anomaly (outlier):} A data point that is very different from most of the others \cite{chandola2009anomaly}.
+
+\textbf{Anomaly detection:} Finding the data points that do not follow the usual pattern, without being told in advance what is normal or abnormal.
+
+\textbf{Anomaly score:} A number between 0 and 1 given to each transaction; the higher it is, the more unusual the transaction.
+
+\textbf{Choropleth map:} A map in which each region (here, each state) is colored according to a value, such as its anomaly rate.
+
+\textbf{Class imbalance:} When one class is much more common than another; fraud is usually far less than 1\% of all transactions.
+
+\textbf{Concept drift:} A change over time in the patterns of the data, which makes a model trained on the past less accurate \cite{gama2014survey}.
+
+\textbf{Contamination:} The share of transactions the model is expected to flag as anomalous (2\% in this work).
+
+\textbf{Cost-sensitive learning:} Training a model so that expensive mistakes (e.g., missing a fraud) weigh more than cheap ones.
+
+\textbf{Dashboard:} A web page that shows the results with interactive charts and maps.
+
+\textbf{Data leakage:} Using, during training, information that would not be available in real use (such as future data), which makes results look better than they are \cite{kaufman2012leakage}.
+
+\textbf{Decision tree:} A model that decides through a sequence of yes/no questions about the data; Isolation Forest is made of many random trees.
+
+\textbf{Deep learning:} A branch of machine learning that uses neural networks with many layers to learn complex patterns, such as images, text, or networks of accounts.
+
+\textbf{Feature:} A variable describing a transaction, such as its amount or hour. \textit{Feature engineering} is the creation of new, more informative features from the original data.
+
+\textbf{GeoJSON:} A standard file format that stores the shapes of geographic regions, used here to draw the US states.
+
+\textbf{Graph neural network (GNN):} A deep learning model that works on networks, for example accounts connected through shared merchants or devices.
+
+\textbf{Hyperparameter:} A setting chosen before training, such as the number of trees (300) or the contamination (2\%).
+
+\textbf{Isolation Forest:} An anomaly detection model that isolates each point with random cuts; unusual points are isolated with fewer cuts \cite{liu2008isolation}.
+
+\textbf{Jaccard similarity:} A measure from 0 to 1 of how much two sets overlap: the shared elements divided by all distinct elements.
+
+\textbf{Label (ground truth):} The known correct answer for an example, such as ``fraud'' or ``not fraud''; this dataset has none.
+
+\textbf{Machine learning (ML):} A set of methods that let computers learn patterns from data instead of following rules written by hand.
+
+\textbf{One-hot encoding:} Turning a category (such as the state) into several yes/no columns, one per possible value.
+
+\textbf{Precision and recall:} Metrics that need labels: precision is the share of flagged cases that are truly fraud; recall is the share of frauds that are flagged.
+
+\textbf{Random seed:} A number that fixes the random choices of a model so a run can be repeated exactly; changing it gives a slightly different model.
+
+\textbf{Sanity check:} A simple test to confirm that results make basic sense; it is not proof that they are correct.
+
+\textbf{Semi-supervised learning:} Learning from a few labeled examples together with many unlabeled ones.
+
+\textbf{SHAP / Shapley values:} A method that explains a model's output by giving each feature a share of it, based on game theory \cite{lundberg2017unified}.
+
+\textbf{SMOTE:} A technique that creates artificial examples of the rare class to balance the data \cite{chawla2002smote}.
+
+\textbf{Spearman correlation:} A measure from $-1$ to 1 of how similarly two lists are ordered; 1 means exactly the same order.
+
+\textbf{Standard deviation:} A measure of how spread out values are; differences ``in standard deviations'' make features with different units comparable.
+
+\textbf{Supervised learning:} Learning from labeled examples to predict the label of new ones.
+
+\textbf{Support:} The number of transactions behind a statistic; rates with low support are unreliable \cite{wainer2007dangerous}.
+
+\textbf{Synthetic data:} Artificial data generated to imitate real data; here, rows added so that every state appears on the map \cite{jordon2022synthetic}.
+
+\textbf{Temporal split:} Dividing data by date into training (past), validation (recent), and test (most recent) periods.
+
+\textbf{Threshold:} The score above which a transaction is flagged as anomalous (0.710 in this work).
+
+\textbf{Unsupervised learning:} Learning patterns from data without any labels.
+
+\endgroup

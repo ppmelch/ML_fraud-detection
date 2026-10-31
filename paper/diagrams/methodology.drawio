@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="methodology" name="Methodology">
+    <mxGraphModel dx="800" dy="600" grid="1" gridSize="4" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="372" pageHeight="300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Column headers -->
+        <mxCell id="hL" value="&lt;b&gt;Detection&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=11;fontColor=#1A1A1A;" vertex="1" parent="1">
+          <mxGeometry x="8" y="4" width="164" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="cR" value="&lt;b&gt;Analyses of the output&lt;/b&gt;" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#F2F2F2;strokeColor=#7A7A7A;dashed=1;verticalAlign=top;spacingTop=2;fontFamily=Times New Roman;fontSize=11;fontColor=#1A1A1A;" vertex="1" parent="1">
+          <mxGeometry x="196" y="4" width="168" height="288" as="geometry" />
+        </mxCell>
+
+        <!-- Detection steps -->
+        <mxCell id="d1" value="&lt;b&gt;Transactions&lt;/b&gt;&lt;br&gt;3,293 rows · no fraud label" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="8" y="32" width="164" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="&lt;b&gt;Temporal split&lt;/b&gt;&lt;br&gt;train · validation · test" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="8" y="84" width="164" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="&lt;b&gt;Feature engineering&lt;/b&gt;&lt;br&gt;85 features" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=none;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="8" y="136" width="164" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="&lt;b&gt;Isolation Forest&lt;/b&gt;&lt;br&gt;300 trees · top-2% threshold" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#111111;strokeColor=none;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="8" y="188" width="164" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d5" value="&lt;b&gt;Anomaly score + flag&lt;/b&gt;&lt;br&gt;per transaction" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#111111;strokeColor=none;fontColor=#FFFFFF;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="8" y="240" width="164" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;strokeWidth=1.2;" edge="1" parent="1" source="d1" target="d2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;strokeWidth=1.2;" edge="1" parent="1" source="d2" target="d3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;strokeWidth=1.2;" edge="1" parent="1" source="d3" target="d4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;strokeWidth=1.2;" edge="1" parent="1" source="d4" target="d5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2E2E2E;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.8889;entryDx=0;entryDy=0;" edge="1" parent="1" source="d5" target="cR"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Analyses -->
+        <mxCell id="a1" value="&lt;b&gt;Temporal drift&lt;/b&gt;&lt;br&gt;rate per window and month" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3A3A3A;fontColor=#111111;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="208" y="32" width="144" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="&lt;b&gt;Stability&lt;/b&gt;&lt;br&gt;10 random seeds" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3A3A3A;fontColor=#111111;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="208" y="84" width="144" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="&lt;b&gt;Behavior&lt;/b&gt;&lt;br&gt;flagged vs. normal" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3A3A3A;fontColor=#111111;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="208" y="136" width="144" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="&lt;b&gt;Interpretability&lt;/b&gt;&lt;br&gt;SHAP feature importance" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3A3A3A;fontColor=#111111;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="208" y="188" width="144" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="&lt;b&gt;Geography&lt;/b&gt;&lt;br&gt;interactive US map" style="rounded=1;arcSize=18;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3A3A3A;fontColor=#111111;fontFamily=Times New Roman;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="208" y="240" width="144" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
