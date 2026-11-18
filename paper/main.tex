@@ -80,7 +80,7 @@ Melchor Soto \MakeLowercase{\textit{et al.}}: Beyond Fraud Detection
 % ==========================================================
 
 \begin{abstract}
-Detecting financial fraud is usually a supervised learning problem, but in practice, labeled examples of fraud are rarely available. This study takes a different approach: instead of trying to classify transactions as fraudulent or not, it looks for transactions that simply behave differently from the rest. Using an Isolation Forest model on 3,293 unlabeled US bank transactions, unusual transactions are flagged and then explored from several angles, including how they change over time, what makes them behave differently, and where they tend to occur geographically. To make sure these findings are not just noise, the model is retrained with ten random seeds and SHAP is used to understand which features drive each anomaly. An interactive map of the United States is also used to show where the anomalies are concentrated. The results show that the model's ranking of unusual transactions is consistent across runs, that a threshold fixed on past data flags three times more transactions in later months, that flagged transactions stand out mainly because of their amount, and that the geographic pattern depends mostly on sample size, all without ever needing labeled fraud data.
+Detecting financial fraud is usually a supervised learning problem, but in practice, labeled examples of fraud are rarely available. This study takes a different approach: instead of trying to classify transactions as fraudulent or not, it looks for transactions that simply behave differently from the rest. Using an Isolation Forest model on 3,293 unlabeled US bank transactions, unusual transactions are flagged and then explored from several angles, including how they change over time, what makes them behave differently, and where they tend to occur geographically. To make sure these findings are not just noise, the model is retrained with ten random seeds and SHAP is used to understand which features drive each anomaly. An interactive map of the United States is also used to show where the anomalies are concentrated. The results show that the model's ranking of unusual transactions is consistent across runs, that a threshold fixed on past data flags three times more transactions in later months, that flagged transactions stand out mainly because of their amount, and that the geographic pattern depends mostly on sample size, all without ever needing labeled fraud data. A second model trained only on the 2,512 real transactions shows that the drift over time and the importance of the amount remain, while the night, weekend, and state-level patterns appear only when the synthetic rows are included.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -174,7 +174,7 @@ When no labels exist, anomaly detection is the natural alternative \cite{chandol
 
 The source is the public \textit{Bank Transaction Dataset for Fraud Detection}: 2,512 US bank transactions from 495 accounts which, despite its name, has \emph{no fraud label}. Each record includes the amount, type (debit or credit), channel (ATM, branch, or online), date and time, city, customer age and occupation, session duration, login attempts, and account balance.
 
-One goal of the project was to show the results on an interactive map of the United States, but the real data covers only 27 of the 52 states and territories in the map. To fill the remaining 25, we added 781 \emph{synthetic} transactions created by resampling real transactions, assigning them a city in each missing state, and slightly perturbing the amount, balance, and date (Fig.~\ref{fig:dataset_map}). Their only purpose is visual coverage, and they remain identifiable. The working dataset therefore has 3,293 transactions from 654 accounts, from 2 January 2023 to 1 January 2024. As shown later, these synthetic rows turned out to affect the results, so every geographic finding separates them from the real ones.
+One goal of the project was to show the results on an interactive map of the United States, but the real data covers only 27 of the 52 states and territories in the map. To fill the remaining 25, we added 781 \emph{synthetic} transactions created by resampling real transactions, assigning them a city in each missing state, and slightly perturbing the amount, balance, and date (Fig.~\ref{fig:dataset_map}). Their only purpose is visual coverage, and they remain identifiable. The working dataset therefore has 3,293 transactions from 654 accounts, from 2 January 2023 to 1 January 2024. All real transactions took place between 16:00 and 18:59 on weekdays, while the synthetic rows have their dates shifted by up to three days and therefore cover every hour and every day of the week. As shown later, these synthetic rows turned out to affect the results, so every geographic finding separates them from the real ones, and Section~\ref{sec:realonly} compares the model with one trained on the real rows only.
 
 \begin{figure}[!t]
 \centering
@@ -306,7 +306,7 @@ Flagged transactions are, above all, large (Fig.~\ref{fig:contrast}). They avera
 
 \subsection{Temporal Activity Patterns}
 
-Over the whole dataset, transactions made between midnight and 5 a.m. are flagged 19\% of the time, against 2.4\% for the rest of the day, and weekend transactions are flagged 17--19\% of the time, against 1.5--3.2\% on weekdays (Fig.~\ref{fig:temporal}). Both groups are rare (about 5\% and 7\% of all transactions), and Isolation Forest isolates rare things easily, so this reflects rarity more than risk: anomalies are, by definition, ``few and different'' \cite{liu2008isolation}. Section~\ref{sec:comparison} compares this pattern with published fraud data.
+Over the whole dataset, transactions made between midnight and 5 a.m. are flagged 19\% of the time, against 2.4\% for the rest of the day, and weekend transactions are flagged 17--19\% of the time, against 1.5--3.2\% on weekdays (Fig.~\ref{fig:temporal}). Both groups are rare (about 5\% and 7\% of all transactions), and Isolation Forest isolates rare things easily, so this reflects rarity more than risk: anomalies are, by definition, ``few and different'' \cite{liu2008isolation}. Section~\ref{sec:comparison} compares this pattern with published fraud data. An important caution comes from Section~\ref{sec:realonly}: no real transaction occurs at night or on a weekend, so every night and weekend transaction in this analysis is synthetic, and this pattern describes the synthetic rows, not real customer behavior.
 
 \begin{figure}[!t]
 \centering
@@ -343,6 +343,74 @@ On the map (Fig.~\ref{fig:state_map}), the states with the highest rates are Con
 \end{figure}
 
 % ==========================================================
+% REAL-ONLY VS AUGMENTED (new)
+% ==========================================================
+
+\section{Real-Only versus Augmented Model}
+\label{sec:realonly}
+
+The model in this paper is trained on the working dataset, which includes 781 synthetic rows. To see how much they matter, the unchanged pipeline was run a second time on the 2,512 real transactions only. We call the two versions the \emph{real-only} and the \emph{augmented} model. Both use the same Isolation Forest (300 trees, seed 42), the same 2\% contamination, the same feature logic, and the same temporal rule. Because the real rows keep their dates, both datasets are split on the same days (training until 3 October, test from 3 November), so the two models can be compared on the same real transactions. The only differences are the rows and, as a consequence, the number of features: 60 instead of 85, since the 25 state columns used only by the synthetic rows disappear. Table~\ref{tab:real_vs_aug} summarizes the comparison and the following subsections explain it.
+
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.15}
+\caption{Real-Only versus Augmented Model}
+\label{tab:real_vs_aug}
+\centering
+\footnotesize
+\begin{tabular}{p{0.38\columnwidth}p{0.25\columnwidth}p{0.27\columnwidth}}
+\hline
+\textbf{Measure} & \textbf{Real-only} & \textbf{Augmented} \\
+\hline
+Rows (train / val. / test) & 1,867 / 218 / 427 & 2,431 / 302 / 560 \\
+Features & 60 & 85 \\
+Threshold & 0.685 & 0.710 \\
+Flagged \%, own periods & 2.04 / 3.67 / 5.15 & 2.02 / 2.32 / 6.79 \\
+Flagged \%, real rows only & 2.09 / 4.13 / 4.68 & 1.50 / 2.29 / 4.22 \\
+Spearman / Jaccard across seeds & 0.92 / 0.75 & 0.90 / 0.69 (real rows: 0.88 / 0.63) \\
+Flagged in all ten runs & 12 of 427 & 16 of 560 (real rows: 5 of 427) \\
+Test amount, flagged vs. normal & \$1,080 vs. \$262 & \$878 vs. \$273 \\
+Flagged at night or weekend & 0 & 48 of 108 \\
+Rank of month in SHAP & 13 of 60 & 1 of 85 \\
+States analyzed; rate vs. size (Spearman) & 27; $-0.30$ ($p=0.13$) & 52; $-0.39$ ($p=0.004$) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{What Does Not Change}
+
+\textbf{The drift over time.} With real data alone the flagged rate also grows after the threshold is fixed: 2.04\% in training, 3.67\% in validation, and 5.15\% in test (Table~\ref{tab:real_vs_aug}). Retraining with ten seeds gives test rates between 4.0\% and 5.6\%, always above 2\%. Month by month (Fig.~\ref{fig:real_vs_aug}b), the rate is below 1\% in February, passes 2\% in June, and reaches 5.4\% in December; the rise starts earlier than in the augmented model, where it begins in August. Restricted to the same real rows, the augmented model shows the same upward trend (1.5\% to 4.2\%) but at a lower level, which is consistent with its higher threshold (0.710 against 0.685), since synthetic rows receive higher scores and push the threshold up. H2 therefore holds without any synthetic data.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig13_real_vs_augmented.pdf}
+\caption{Share of flagged real transactions under the real-only and the augmented model, (a) by period and (b) by month. The dashed line is the 2\% target.}
+\label{fig:real_vs_aug}
+\end{figure}
+
+\textbf{The ranking and its stability.} On the 427 real test transactions, the scores of the two models are strongly related (Spearman 0.82), and 15 of the 20 highest-scoring transactions are the same. The flagged sets agree less: 22 transactions for the real-only model, 19 for the augmented one, and 14 in common (Jaccard 0.52). This repeats the pattern of Section~\ref{sec:res_synthetic}: the order is more reliable than the yes/no flag. Across ten seeds, the real-only model is at least as stable as the augmented one (Spearman 0.92 and Jaccard 0.75, against 0.90 and 0.69), and 12 of its 427 test transactions are flagged in all ten runs. For the augmented model evaluated only on its real test rows, the agreement is lower (0.88 and 0.63, with 5 transactions flagged every time), so the synthetic rows do not help stability. H1 holds in both models.
+
+\textbf{The role of the amount.} In the real-only model flagged transactions average \$1,080 against \$262 for normal ones in the test period, and the five largest differences are again all related to the amount, now between 1.9 and 2.7 standard deviations (1.8 to 1.9 in the augmented model). H3 is therefore at least as strong with real data. The SHAP influence is also spread over several kinds of features (geographic 42\%, account, channel and type 27\%, amount 17\%, demographic 8\%, and temporal 6\% of the total), with Texas, California, debit transactions and the amount relative to the account at the top, so H4 holds as well.
+
+\subsection{What Depends on the Synthetic Rows}
+
+\textbf{Night and weekend patterns.} All 2,512 real transactions occurred between 16:00 and 18:59 from Monday to Friday. The 188 night transactions (before 06:00) and the 214 weekend transactions in the dataset are all synthetic, because their dates were shifted by up to three days. As a result, all 48 flagged transactions that happen at night or on a weekend are synthetic, and the features \texttt{Is\_Night} and \texttt{Is\_Weekend} are constant in the real-only model and cannot influence it. The concentrations reported in Sections~\ref{sec:res_synthetic} and~\ref{sec:comparison} (for example, 35\% of the flagged transactions on weekends) are therefore a property of the synthetic rows. In general, the synthetic rows are over-represented among the flagged transactions: they are 24\% of the rows but 57 of the 108 flagged ones.
+
+\textbf{The month in SHAP.} In the augmented model the month is the most influential feature, but in the real-only model it ranks 13th of 60, although the drift is still present. Its prominence in the augmented model is therefore not a robust finding, and the drift cannot be attributed to a single feature.
+
+\textbf{Geography.} The real data cover 27 states and every one of them has between 41 and 357 transactions. Their flagged rates go from 0\% to 7.3\% (Nevada, 55 transactions), and the relationship between rate and number of transactions is weak and not significant (Spearman $-0.30$, $p=0.13$; $0.09$ with $p=0.66$ when the augmented model is restricted to the same states). The strong relationship of the augmented model ($-0.39$, $p=0.004$) appears only when the 25 synthetic-only states are added: all 20 states with 40 transactions or fewer, and all twelve states with the highest rates, are synthetic-only (Fig.~\ref{fig:state_support}). The extreme values on the map come from the added states and not from real behavior.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig14_state_support_comparison.pdf}
+\caption{Flagged rate against number of transactions per state. Real states have similar sizes and moderate rates; the extreme rates belong to synthetic-only states with few transactions.}
+\label{fig:state_support}
+\end{figure}
+
+\subsection{Reading the Two Models Together}
+
+The real-only model supports the main claims that do not depend on the calendar or on the map: the ranking of unusual transactions is stable, a fixed threshold loses calibration over time, and flagged transactions are, above all, large for their context. It does not support the night, weekend, and state-level patterns, which exist only because of the synthetic rows. The augmented model is still useful to show a complete map, but conclusions about behavior should be drawn from the real-only model. All numbers are descriptive: the real test period has only 427 transactions and 22 flagged ones, so differences of a few transactions should not be over-interpreted.
+
+% ==========================================================
 % COMPARISON WITH PREVIOUS STUDIES (new)
 % ==========================================================
 
@@ -353,11 +421,11 @@ This section compares each main result with what previous studies have reported.
 
 \subsection{Night Hours}
 
-Afriyie et al. \cite{afriyie2023supervised}, who analyzed 555,719 labeled credit card transactions from the western United States (a public dataset generated with a transaction simulator), found that fraud was concentrated between 22:00 and 04:00. Industry data from Accertify, covering 576 million retail transactions processed during the Cyber Week periods of 2021 to 2025, give the same picture in numbers: the window from 22:00 to 04:00 held 12.7\% of all transactions but 19.7\% of attempted fraud, and the overnight fraud rate was on average 2.1 times the midday rate \cite{accertify2026cyber}. Stripe likewise reported that fraud peaks late at night while legitimate traffic peaks during working hours \cite{woodward2017stripe}. In our data the same window (22:00--04:59) holds 6.5\% of all transactions but 29.6\% of flagged ones, and its flagged rate (15.0\%) is about 5 times the midday rate (2.8\% between 11:00 and 13:59). Our results therefore point in the same direction as the published evidence, but with a stronger concentration. A likely reason is that in our dataset night transactions are much rarer than in retail data (79\% of our transactions occur between 16:00 and 18:59), and Isolation Forest isolates rare values easily \cite{liu2008isolation}.
+Afriyie et al. \cite{afriyie2023supervised}, who analyzed 555,719 labeled credit card transactions from the western United States (a public dataset generated with a transaction simulator), found that fraud was concentrated between 22:00 and 04:00. Industry data from Accertify, covering 576 million retail transactions processed during the Cyber Week periods of 2021 to 2025, give the same picture in numbers: the window from 22:00 to 04:00 held 12.7\% of all transactions but 19.7\% of attempted fraud, and the overnight fraud rate was on average 2.1 times the midday rate \cite{accertify2026cyber}. Stripe likewise reported that fraud peaks late at night while legitimate traffic peaks during working hours \cite{woodward2017stripe}. In our data the same window (22:00--04:59) holds 6.5\% of all transactions but 29.6\% of flagged ones, and its flagged rate (15.0\%) is about 5 times the midday rate (2.8\% between 11:00 and 13:59). Our results therefore point in the same direction as the published evidence, but with a stronger concentration. A likely reason is that in our dataset night transactions are much rarer than in retail data (79\% of our transactions occur between 16:00 and 18:59), and Isolation Forest isolates rare values easily \cite{liu2008isolation}. Note, however, that all real transactions in the dataset occur between 16:00 and 18:59 (Section~\ref{sec:realonly}), so the night transactions that produce this concentration are the synthetic ones, and the agreement above should be read as a property of the synthetic rows.
 
 \subsection{Weekends}
 
-According to Stripe, fraud rises on quiet days with little legitimate activity, rather than on busy shopping days \cite{woodward2017stripe}. Accertify did not compare weekend and weekday fraud rates directly, but found that, in 2025, the fraud-to-legitimate cart value ratio reached 2.56 on both Saturday and Sunday \cite{accertify2026cyber}. In the simulated data of Afriyie et al., Sunday was the day with the largest number of fraudulent transactions (372), although this is a count and not a rate \cite{afriyie2023supervised}. In our data the weekend is the quietest period: it holds only 6.5\% of all transactions but 35.2\% of flagged ones, with a flagged rate of 17.8\% against 2.3\% on weekdays. This agrees with Stripe's observation about quiet days. However, the published evidence on weekends is weaker and less direct than for night hours, so we treat this agreement with more caution.
+According to Stripe, fraud rises on quiet days with little legitimate activity, rather than on busy shopping days \cite{woodward2017stripe}. Accertify did not compare weekend and weekday fraud rates directly, but found that, in 2025, the fraud-to-legitimate cart value ratio reached 2.56 on both Saturday and Sunday \cite{accertify2026cyber}. In the simulated data of Afriyie et al., Sunday was the day with the largest number of fraudulent transactions (372), although this is a count and not a rate \cite{afriyie2023supervised}. In our data the weekend is the quietest period: it holds only 6.5\% of all transactions but 35.2\% of flagged ones, with a flagged rate of 17.8\% against 2.3\% on weekdays. This agrees with Stripe's observation about quiet days. However, the published evidence on weekends is weaker and less direct than for night hours, so we treat this agreement with more caution. As with night hours, the real data contain no weekend transactions (Section~\ref{sec:realonly}); the weekend pattern comes entirely from the synthetic rows.
 
 \subsection{Transaction Amount}
 
@@ -419,7 +487,7 @@ The shift over time is the clearest limitation. Without labels we cannot tell wh
 
 \subsection{Hypothesis Evaluation}
 
-Section~\ref{sec:comparison} showed that five of the eight main results agree with previous studies, one agrees only partly, one differs, and one cannot be checked without labels. Table~\ref{tab:hypotheses} summarizes the hypotheses. All five are supported; H5 even more than expected, because the synthetic rows add a second reason, besides sample size, why the geographic pattern cannot be read as risk.
+Section~\ref{sec:comparison} showed that five of the eight main results agree with previous studies, one agrees only partly, one differs, and one cannot be checked without labels. Table~\ref{tab:hypotheses} summarizes the hypotheses. All five are supported; H5 even more than expected, because the synthetic rows add a second reason, besides sample size, why the geographic pattern cannot be read as risk. The model trained on real rows only (Section~\ref{sec:realonly}) also supports H1 to H4; H5 cannot be tested there, because every real state has at least 41 transactions and no small-state effect appears.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.2}
@@ -445,7 +513,7 @@ H5 & Small and synthetic states have the highest rates & Supported \\
 
 \section{Limitations}
 
-The main limitation is the lack of fraud labels: flagged transactions are unusual, not confirmed fraud, and rare but legitimate behavior (such as weekend purchases) is flagged too. A fixed threshold does not hold over time, and with a single year of data the shift cannot be separated from seasonality. About a quarter of the data (781 rows) is synthetic and influences the results, especially by state. Many states have few transactions, and the test period has only 560, so all numbers should be read as descriptive. Validating the approach would require labeled data, feedback from analysts, or a second dataset.
+The main limitation is the lack of fraud labels: flagged transactions are unusual, not confirmed fraud, and rare but legitimate behavior (such as weekend purchases) is flagged too. A fixed threshold does not hold over time, and with a single year of data the shift cannot be separated from seasonality. About a quarter of the data (781 rows) is synthetic and influences the results, especially by state; it is also the only source of night and weekend transactions, since the real ones all occur on weekdays between 16:00 and 18:59. Many states have few transactions, and the test period has only 560, so all numbers should be read as descriptive. Validating the approach would require labeled data, feedback from analysts, or a second dataset.
 
 % ==========================================================
 % 9. CONCLUSION
@@ -453,7 +521,7 @@ The main limitation is the lack of fraud labels: flagged transactions are unusua
 
 \section{Conclusion}
 
-This work treated fraud detection as a search for unusual transactions, since no fraud labels were available. An Isolation Forest, trained on past data and evaluated on later months, was analyzed from five angles. The ranking of unusual transactions was consistent across ten runs, and 16 test transactions were flagged every time. A threshold fixed on past data flagged three times more transactions in the final months, because scores rise gradually from August, even in real transactions. Flagged transactions stand out mainly because of their amount, while the model as a whole depends on many factors. The geographic pattern on the US map is explained by sample size and by the synthetic rows. All of these results are consistent with previous studies on concept drift, Isolation Forest, fraud features, and small-sample statistics. As future work, we propose updating the threshold periodically, repeating the analysis with real transactions only and with several years of data, comparing other detectors, and using analyst reviews of the most stable anomalies as the first labels for a semi-supervised model.
+This work treated fraud detection as a search for unusual transactions, since no fraud labels were available. An Isolation Forest, trained on past data and evaluated on later months, was analyzed from five angles. The ranking of unusual transactions was consistent across ten runs, and 16 test transactions were flagged every time. A threshold fixed on past data flagged three times more transactions in the final months, because scores rise gradually from August, even in real transactions. Flagged transactions stand out mainly because of their amount, while the model as a whole depends on many factors. The geographic pattern on the US map is explained by sample size and by the synthetic rows. A model trained on the real transactions only confirms the drift over time, a stable ranking, and an amount-driven profile, whereas the night, weekend, and state-level patterns appear only with the synthetic rows. All of these results are consistent with previous studies on concept drift, Isolation Forest, fraud features, and small-sample statistics. As future work, we propose updating the threshold periodically, repeating the analysis with several years of real data that include nights and weekends, comparing other detectors, and using analyst reviews of the most stable anomalies as the first labels for a semi-supervised model.
 
 % ==========================================================
 % GLOSSARY (new)

@@ -1,0 +1,994 @@
+{
+  "setup": {
+    "contamination": 0.02,
+    "seed": 42,
+    "n_real_rows": 2512,
+    "n_full_rows": 3293,
+    "n_synthetic_rows": 781
+  },
+  "real_only": {
+    "threshold": 0.6849275074518808,
+    "n_features": 60,
+    "split": {
+      "train": 1867,
+      "validation": 218,
+      "test": 427
+    },
+    "own_windows": {
+      "train": {
+        "n": 1867,
+        "flagged": 38,
+        "rate": 0.020353508302088912,
+        "score_mean": 0.35186354284352905
+      },
+      "validation": {
+        "n": 218,
+        "flagged": 8,
+        "rate": 0.03669724770642202,
+        "score_mean": 0.4058206283741162
+      },
+      "test": {
+        "n": 427,
+        "flagged": 22,
+        "rate": 0.05152224824355972,
+        "score_mean": 0.3956804997244483
+      }
+    },
+    "windows": {
+      "train": {
+        "n": 1867,
+        "flagged": 39,
+        "rate": 0.02088912694161757,
+        "score_mean": 0.3581301303825648
+      },
+      "validation": {
+        "n": 218,
+        "flagged": 9,
+        "rate": 0.04128440366972477,
+        "score_mean": 0.40608439372908806
+      },
+      "test": {
+        "n": 427,
+        "flagged": 20,
+        "rate": 0.0468384074941452,
+        "score_mean": 0.40472856615933733
+      }
+    },
+    "monthly": {
+      "2023-01": {
+        "n": 207,
+        "flagged": 2,
+        "rate": 0.00966183574879227
+      },
+      "2023-02": {
+        "n": 218,
+        "flagged": 2,
+        "rate": 0.009174311926605505
+      },
+      "2023-03": {
+        "n": 197,
+        "flagged": 4,
+        "rate": 0.02030456852791878
+      },
+      "2023-04": {
+        "n": 161,
+        "flagged": 1,
+        "rate": 0.006211180124223602
+      },
+      "2023-05": {
+        "n": 220,
+        "flagged": 4,
+        "rate": 0.01818181818181818
+      },
+      "2023-06": {
+        "n": 212,
+        "flagged": 5,
+        "rate": 0.02358490566037736
+      },
+      "2023-07": {
+        "n": 195,
+        "flagged": 5,
+        "rate": 0.02564102564102564
+      },
+      "2023-08": {
+        "n": 224,
+        "flagged": 7,
+        "rate": 0.03125
+      },
+      "2023-09": {
+        "n": 214,
+        "flagged": 9,
+        "rate": 0.04205607476635514
+      },
+      "2023-10": {
+        "n": 226,
+        "flagged": 9,
+        "rate": 0.03982300884955752
+      },
+      "2023-11": {
+        "n": 221,
+        "flagged": 9,
+        "rate": 0.04072398190045249
+      },
+      "2023-12": {
+        "n": 204,
+        "flagged": 11,
+        "rate": 0.05392156862745098
+      },
+      "2024-01": {
+        "n": 13,
+        "flagged": 0,
+        "rate": 0.0
+      }
+    },
+    "stability": {
+      "n_test": 427,
+      "jaccard_mean": 0.7532979144952193,
+      "spearman_mean": 0.9223641300817716,
+      "never_flagged": 398,
+      "ever_flagged": 29,
+      "borderline_1_to_4": 8,
+      "always_flagged": 12,
+      "test_rate_min": 0.03981264637002342,
+      "test_rate_max": 0.05620608899297424
+    },
+    "shap": {
+      "method": "shap_tree_explainer",
+      "n_features": 60,
+      "month_rank": 13,
+      "top10": [
+        {
+          "feature": "USState_Texas",
+          "importance": 0.14217638508130015,
+          "type": "Geographic"
+        },
+        {
+          "feature": "USState_California",
+          "importance": 0.13932825694697074,
+          "type": "Geographic"
+        },
+        {
+          "feature": "TransactionType_Debit",
+          "importance": 0.13521607022486679,
+          "type": "Account / channel / type"
+        },
+        {
+          "feature": "Amount_Dev_Account",
+          "importance": 0.13510039521876838,
+          "type": "Amount"
+        },
+        {
+          "feature": "CustomerOccupation_Retired",
+          "importance": 0.10910367682220332,
+          "type": "Demographic"
+        },
+        {
+          "feature": "CustomerOccupation_Engineer",
+          "importance": 0.10755567921060785,
+          "type": "Demographic"
+        },
+        {
+          "feature": "Hour_Frequency",
+          "importance": 0.10352927286081805,
+          "type": "Account / channel / type"
+        },
+        {
+          "feature": "Channel_Online",
+          "importance": 0.1008890890713513,
+          "type": "Account / channel / type"
+        },
+        {
+          "feature": "USState_Frequency",
+          "importance": 0.09817882956422296,
+          "type": "Geographic"
+        },
+        {
+          "feature": "CustomerOccupation_Student",
+          "importance": 0.0977846279100312,
+          "type": "Demographic"
+        }
+      ],
+      "share_by_type": {
+        "Geographic": 0.41674274457397104,
+        "Account / channel / type": 0.273322401828817,
+        "Amount": 0.16626129132983286,
+        "Demographic": 0.08463772988521452,
+        "Temporal": 0.05903583238216453
+      }
+    },
+    "behavior": {
+      "n_flagged": 68,
+      "flagged_rate": 0.027070063694267517,
+      "amount_flagged_mean": 1142.109117647059,
+      "amount_normal_mean": 274.0966243862521,
+      "flagged_share_of_money": 0.10388982855147479,
+      "n_night_rows": 0,
+      "n_weekend_rows": 0,
+      "night_rate": null,
+      "not_night_rate": 0.027070063694267517,
+      "weekend_rate": null,
+      "weekday_rate": 0.027070063694267517,
+      "weekend_share_of_flagged": 0.0
+    },
+    "feature_contrast_top10": [
+      {
+        "feature": "Amount_Dev_Hour",
+        "std_gap": 2.724297073852587
+      },
+      {
+        "feature": "TransactionAmount",
+        "std_gap": 2.703641656705183
+      },
+      {
+        "feature": "Amount_Dev_USState",
+        "std_gap": 2.6478322609173808
+      },
+      {
+        "feature": "Amount_Dev_MerchantID",
+        "std_gap": 2.540477541197304
+      },
+      {
+        "feature": "Amount_To_Balance_Ratio",
+        "std_gap": 1.8561733226953785
+      },
+      {
+        "feature": "Log_Transaction_Amount",
+        "std_gap": 1.3461671914510547
+      },
+      {
+        "feature": "Amount_Dev_Account",
+        "std_gap": 1.2896162570254066
+      },
+      {
+        "feature": "LoginAttempts",
+        "std_gap": 0.9055552296320588
+      },
+      {
+        "feature": "USState_Nevada",
+        "std_gap": 0.5612131774994212
+      },
+      {
+        "feature": "Log_Account_Balance",
+        "std_gap": -0.5183309280681071
+      }
+    ],
+    "amounts_test": {
+      "n_test": 427,
+      "n_flagged": 22,
+      "flagged_mean": 1080.2145454545455,
+      "normal_mean": 261.5308641975309
+    },
+    "states": {
+      "n_states": 27,
+      "n_states_analyzed": 27,
+      "spearman_rate_vs_n": -0.2982647604484833,
+      "p_value": 0.130755314083991,
+      "small_states_n": 0,
+      "small_states_rate": null,
+      "large_states_n": 7,
+      "large_states_rate": 0.02178649237472767,
+      "top12": [
+        {
+          "state": "Nevada",
+          "n": 55,
+          "flagged": 4,
+          "rate": 0.07272727272727272,
+          "synthetic_only": false
+        },
+        {
+          "state": "Ohio",
+          "n": 54,
+          "flagged": 3,
+          "rate": 0.05555555555555555,
+          "synthetic_only": false
+        },
+        {
+          "state": "Missouri",
+          "n": 61,
+          "flagged": 3,
+          "rate": 0.04918032786885246,
+          "synthetic_only": false
+        },
+        {
+          "state": "Oregon",
+          "n": 42,
+          "flagged": 2,
+          "rate": 0.047619047619047616,
+          "synthetic_only": false
+        },
+        {
+          "state": "Michigan",
+          "n": 63,
+          "flagged": 3,
+          "rate": 0.047619047619047616,
+          "synthetic_only": false
+        },
+        {
+          "state": "Oklahoma",
+          "n": 68,
+          "flagged": 3,
+          "rate": 0.04411764705882353,
+          "synthetic_only": false
+        },
+        {
+          "state": "District of Columbia",
+          "n": 48,
+          "flagged": 2,
+          "rate": 0.041666666666666664,
+          "synthetic_only": false
+        },
+        {
+          "state": "Kentucky",
+          "n": 51,
+          "flagged": 2,
+          "rate": 0.0392156862745098,
+          "synthetic_only": false
+        },
+        {
+          "state": "Wisconsin",
+          "n": 55,
+          "flagged": 2,
+          "rate": 0.03636363636363636,
+          "synthetic_only": false
+        },
+        {
+          "state": "New York",
+          "n": 58,
+          "flagged": 2,
+          "rate": 0.034482758620689655,
+          "synthetic_only": false
+        },
+        {
+          "state": "Washington",
+          "n": 61,
+          "flagged": 2,
+          "rate": 0.03278688524590164,
+          "synthetic_only": false
+        },
+        {
+          "state": "Georgia",
+          "n": 61,
+          "flagged": 2,
+          "rate": 0.03278688524590164,
+          "synthetic_only": false
+        }
+      ],
+      "top12_synthetic_only": 0
+    }
+  },
+  "augmented": {
+    "threshold": 0.7104945530387144,
+    "n_features": 85,
+    "split": {
+      "train": 2431,
+      "validation": 302,
+      "test": 560
+    },
+    "own_windows": {
+      "train": {
+        "n": 2431,
+        "flagged": 49,
+        "rate": 0.020156314273961334,
+        "score_mean": 0.3610333853206413
+      },
+      "validation": {
+        "n": 302,
+        "flagged": 7,
+        "rate": 0.023178807947019868,
+        "score_mean": 0.4244185531803006
+      },
+      "test": {
+        "n": 560,
+        "flagged": 38,
+        "rate": 0.06785714285714285,
+        "score_mean": 0.4228697110879087
+      }
+    },
+    "windows_on_real_rows": {
+      "train": {
+        "n": 1867,
+        "flagged": 28,
+        "rate": 0.014997321906802356,
+        "score_mean": 0.3478787526252087
+      },
+      "validation": {
+        "n": 218,
+        "flagged": 5,
+        "rate": 0.022935779816513763,
+        "score_mean": 0.40410733462313314
+      },
+      "test": {
+        "n": 427,
+        "flagged": 18,
+        "rate": 0.04215456674473068,
+        "score_mean": 0.41371230237756257
+      }
+    },
+    "windows_all_rows": {
+      "train": {
+        "n": 2431,
+        "flagged": 58,
+        "rate": 0.02385849444672974,
+        "score_mean": 0.36843670842651066
+      },
+      "validation": {
+        "n": 302,
+        "flagged": 10,
+        "rate": 0.033112582781456956,
+        "score_mean": 0.4258263350442098
+      },
+      "test": {
+        "n": 560,
+        "flagged": 40,
+        "rate": 0.07142857142857142,
+        "score_mean": 0.43339505217550545
+      }
+    },
+    "monthly_on_real_rows": {
+      "2023-01": {
+        "n": 207,
+        "flagged": 1,
+        "rate": 0.004830917874396135
+      },
+      "2023-02": {
+        "n": 218,
+        "flagged": 1,
+        "rate": 0.0045871559633027525
+      },
+      "2023-03": {
+        "n": 197,
+        "flagged": 2,
+        "rate": 0.01015228426395939
+      },
+      "2023-04": {
+        "n": 161,
+        "flagged": 2,
+        "rate": 0.012422360248447204
+      },
+      "2023-05": {
+        "n": 220,
+        "flagged": 4,
+        "rate": 0.01818181818181818
+      },
+      "2023-06": {
+        "n": 212,
+        "flagged": 3,
+        "rate": 0.014150943396226415
+      },
+      "2023-07": {
+        "n": 195,
+        "flagged": 4,
+        "rate": 0.020512820512820513
+      },
+      "2023-08": {
+        "n": 224,
+        "flagged": 4,
+        "rate": 0.017857142857142856
+      },
+      "2023-09": {
+        "n": 214,
+        "flagged": 7,
+        "rate": 0.03271028037383177
+      },
+      "2023-10": {
+        "n": 226,
+        "flagged": 5,
+        "rate": 0.022123893805309734
+      },
+      "2023-11": {
+        "n": 221,
+        "flagged": 9,
+        "rate": 0.04072398190045249
+      },
+      "2023-12": {
+        "n": 204,
+        "flagged": 9,
+        "rate": 0.04411764705882353
+      },
+      "2024-01": {
+        "n": 13,
+        "flagged": 0,
+        "rate": 0.0
+      }
+    },
+    "stability_all_test": {
+      "n_test": 560,
+      "jaccard_mean": 0.6886387227757604,
+      "spearman_mean": 0.8990586564843451,
+      "never_flagged": 508,
+      "ever_flagged": 52,
+      "borderline_1_to_4": 21,
+      "always_flagged": 16,
+      "test_rate_min": 0.04642857142857143,
+      "test_rate_max": 0.06785714285714285
+    },
+    "stability_real_test": {
+      "n_test": 427,
+      "jaccard_mean": 0.630738136132873,
+      "spearman_mean": 0.8758269633708177,
+      "never_flagged": 405,
+      "ever_flagged": 22,
+      "borderline_1_to_4": 11,
+      "always_flagged": 5,
+      "test_rate_min": 0.01639344262295082,
+      "test_rate_max": 0.04449648711943794
+    },
+    "shap_all_test": {
+      "method": "shap_tree_explainer",
+      "n_features": 85,
+      "month_rank": 1,
+      "top10": [
+        {
+          "feature": "Month",
+          "importance": 0.1469368630746597,
+          "type": "Temporal"
+        },
+        {
+          "feature": "USState_Texas",
+          "importance": 0.14281752959126073,
+          "type": "Geographic"
+        },
+        {
+          "feature": "TransactionType_Debit",
+          "importance": 0.12972139589976514,
+          "type": "Account / channel / type"
+        },
+        {
+          "feature": "Amount_Dev_Account",
+          "importance": 0.11344136517850777,
+          "type": "Amount"
+        },
+        {
+          "feature": "USState_California",
+          "importance": 0.11304713256407128,
+          "type": "Geographic"
+        },
+        {
+          "feature": "CustomerOccupation_Student",
+          "importance": 0.09108801067668114,
+          "type": "Demographic"
+        },
+        {
+          "feature": "CustomerOccupation_Retired",
+          "importance": 0.0845167229444717,
+          "type": "Demographic"
+        },
+        {
+          "feature": "CustomerOccupation_Engineer",
+          "importance": 0.08300421744991508,
+          "type": "Demographic"
+        },
+        {
+          "feature": "USState_Frequency",
+          "importance": 0.08275139303918638,
+          "type": "Geographic"
+        },
+        {
+          "feature": "USState_Arizona",
+          "importance": 0.08063184329857119,
+          "type": "Geographic"
+        }
+      ],
+      "share_by_type": {
+        "Temporal": 0.10207637589586607,
+        "Geographic": 0.4485525269606905,
+        "Account / channel / type": 0.21933055470178206,
+        "Amount": 0.1560683234449371,
+        "Demographic": 0.07397221899672432
+      }
+    },
+    "shap_real_test": {
+      "method": "shap_tree_explainer",
+      "n_features": 85,
+      "month_rank": 2,
+      "top10": [
+        {
+          "feature": "USState_Texas",
+          "importance": 0.16206301198931636,
+          "type": "Geographic"
+        },
+        {
+          "feature": "Month",
+          "importance": 0.1496782152401811,
+          "type": "Temporal"
+        },
+        {
+          "feature": "TransactionType_Debit",
+          "importance": 0.12956598220622337,
+          "type": "Account / channel / type"
+        },
+        {
+          "feature": "USState_California",
+          "importance": 0.1273841169050889,
+          "type": "Geographic"
+        },
+        {
+          "feature": "Amount_Dev_Account",
+          "importance": 0.11425176528628672,
+          "type": "Amount"
+        },
+        {
+          "feature": "USState_Arizona",
+          "importance": 0.09580193359261803,
+          "type": "Geographic"
+        },
+        {
+          "feature": "USState_Frequency",
+          "importance": 0.09535960867645278,
+          "type": "Geographic"
+        },
+        {
+          "feature": "CustomerOccupation_Student",
+          "importance": 0.089548075862464,
+          "type": "Demographic"
+        },
+        {
+          "feature": "CustomerOccupation_Retired",
+          "importance": 0.08709156920733148,
+          "type": "Demographic"
+        },
+        {
+          "feature": "CustomerOccupation_Engineer",
+          "importance": 0.08316289453635602,
+          "type": "Demographic"
+        }
+      ],
+      "share_by_type": {
+        "Geographic": 0.4665461805050411,
+        "Temporal": 0.07961694482383391,
+        "Account / channel / type": 0.22110147248040893,
+        "Amount": 0.15716023513333816,
+        "Demographic": 0.07557516705737788
+      }
+    },
+    "behavior_on_real_rows": {
+      "n_flagged": 51,
+      "flagged_rate": 0.020302547770700636,
+      "amount_flagged_mean": 1179.1403921568626,
+      "amount_normal_mean": 279.32523770824866,
+      "flagged_share_of_money": 0.08044373209606343,
+      "n_night_rows": 0,
+      "n_weekend_rows": 0,
+      "night_rate": null,
+      "not_night_rate": 0.020302547770700636,
+      "weekend_rate": null,
+      "weekday_rate": 0.020302547770700636,
+      "weekend_share_of_flagged": 0.0
+    },
+    "behavior_all_rows": {
+      "n_flagged": 108,
+      "flagged_rate": 0.03279684178560583,
+      "amount_flagged_mean": 863.5441666666667,
+      "amount_normal_mean": 278.96241444270015,
+      "flagged_share_of_money": 0.09499567541110893,
+      "n_night_rows": 188,
+      "n_weekend_rows": 214,
+      "night_rate": 0.1702127659574468,
+      "not_night_rate": 0.024476650563607084,
+      "weekend_rate": 0.17757009345794392,
+      "weekday_rate": 0.02273465410847678,
+      "weekend_share_of_flagged": 0.35185185185185186
+    },
+    "feature_contrast_top10_all_test": [
+      {
+        "feature": "TransactionAmount",
+        "std_gap": 1.9386279997594544
+      },
+      {
+        "feature": "Amount_Dev_Hour",
+        "std_gap": 1.9348616758703345
+      },
+      {
+        "feature": "Amount_Dev_USState",
+        "std_gap": 1.920540410864502
+      },
+      {
+        "feature": "Amount_Dev_MerchantID",
+        "std_gap": 1.8744637085279174
+      },
+      {
+        "feature": "Amount_To_Balance_Ratio",
+        "std_gap": 1.8281322446650612
+      },
+      {
+        "feature": "Is_Weekend",
+        "std_gap": 1.2900328727572974
+      },
+      {
+        "feature": "Log_Transaction_Amount",
+        "std_gap": 1.0015408425238483
+      },
+      {
+        "feature": "Amount_Dev_Account",
+        "std_gap": 0.9870310200147716
+      },
+      {
+        "feature": "CustomerOccupation_Student",
+        "std_gap": 0.808632846902234
+      },
+      {
+        "feature": "Is_Night",
+        "std_gap": 0.7726702004129604
+      }
+    ],
+    "feature_contrast_top10_real_test": [
+      {
+        "feature": "TransactionAmount",
+        "std_gap": 2.731298285059891
+      },
+      {
+        "feature": "Amount_Dev_Hour",
+        "std_gap": 2.700579248916385
+      },
+      {
+        "feature": "Amount_Dev_USState",
+        "std_gap": 2.618045518743928
+      },
+      {
+        "feature": "Amount_To_Balance_Ratio",
+        "std_gap": 2.573526507704939
+      },
+      {
+        "feature": "Amount_Dev_MerchantID",
+        "std_gap": 2.546727620669433
+      },
+      {
+        "feature": "Log_Transaction_Amount",
+        "std_gap": 1.3477952879719386
+      },
+      {
+        "feature": "Amount_Dev_Account",
+        "std_gap": 1.23537761638457
+      },
+      {
+        "feature": "LoginAttempts",
+        "std_gap": 0.9749263707266295
+      },
+      {
+        "feature": "USState_Nevada",
+        "std_gap": 0.6678811989687178
+      },
+      {
+        "feature": "CustomerOccupation_Student",
+        "std_gap": 0.6582159978024791
+      }
+    ],
+    "amounts_test_all": {
+      "n_test": 560,
+      "n_flagged": 38,
+      "flagged_mean": 877.5965789473684,
+      "normal_mean": 272.9756513409962
+    },
+    "amounts_test_real": {
+      "n_test": 427,
+      "n_flagged": 19,
+      "flagged_mean": 1093.9684210526316,
+      "normal_mean": 266.9100980392157
+    },
+    "states_all_rows": {
+      "n_states": 52,
+      "n_states_analyzed": 52,
+      "spearman_rate_vs_n": -0.3903066261149629,
+      "p_value": 0.004229276376241697,
+      "small_states_n": 20,
+      "small_states_rate": 0.07867494824016563,
+      "large_states_n": 7,
+      "large_states_rate": 0.02178649237472767,
+      "top12": [
+        {
+          "state": "Connecticut",
+          "n": 36,
+          "flagged": 6,
+          "rate": 0.16666666666666666,
+          "synthetic_only": true
+        },
+        {
+          "state": "West Virginia",
+          "n": 20,
+          "flagged": 3,
+          "rate": 0.15,
+          "synthetic_only": true
+        },
+        {
+          "state": "Alaska",
+          "n": 20,
+          "flagged": 3,
+          "rate": 0.15,
+          "synthetic_only": true
+        },
+        {
+          "state": "Kansas",
+          "n": 29,
+          "flagged": 4,
+          "rate": 0.13793103448275862,
+          "synthetic_only": true
+        },
+        {
+          "state": "Minnesota",
+          "n": 57,
+          "flagged": 6,
+          "rate": 0.10526315789473684,
+          "synthetic_only": true
+        },
+        {
+          "state": "Montana",
+          "n": 20,
+          "flagged": 2,
+          "rate": 0.1,
+          "synthetic_only": true
+        },
+        {
+          "state": "South Dakota",
+          "n": 20,
+          "flagged": 2,
+          "rate": 0.1,
+          "synthetic_only": true
+        },
+        {
+          "state": "Arkansas",
+          "n": 30,
+          "flagged": 3,
+          "rate": 0.1,
+          "synthetic_only": true
+        },
+        {
+          "state": "Maine",
+          "n": 20,
+          "flagged": 2,
+          "rate": 0.1,
+          "synthetic_only": true
+        },
+        {
+          "state": "New Hampshire",
+          "n": 20,
+          "flagged": 2,
+          "rate": 0.1,
+          "synthetic_only": true
+        },
+        {
+          "state": "Puerto Rico",
+          "n": 33,
+          "flagged": 3,
+          "rate": 0.09090909090909091,
+          "synthetic_only": true
+        },
+        {
+          "state": "South Carolina",
+          "n": 51,
+          "flagged": 4,
+          "rate": 0.0784313725490196,
+          "synthetic_only": true
+        }
+      ],
+      "top12_synthetic_only": 12
+    },
+    "states_real_rows": {
+      "n_states": 27,
+      "n_states_analyzed": 27,
+      "spearman_rate_vs_n": 0.0895774528886866,
+      "p_value": 0.6568052015769105,
+      "small_states_n": 0,
+      "small_states_rate": null,
+      "large_states_n": 7,
+      "large_states_rate": 0.02178649237472767,
+      "top12": [
+        {
+          "state": "District of Columbia",
+          "n": 48,
+          "flagged": 3,
+          "rate": 0.0625,
+          "synthetic_only": false
+        },
+        {
+          "state": "Nevada",
+          "n": 55,
+          "flagged": 3,
+          "rate": 0.05454545454545454,
+          "synthetic_only": false
+        },
+        {
+          "state": "Georgia",
+          "n": 61,
+          "flagged": 2,
+          "rate": 0.03278688524590164,
+          "synthetic_only": false
+        },
+        {
+          "state": "Florida",
+          "n": 124,
+          "flagged": 4,
+          "rate": 0.03225806451612903,
+          "synthetic_only": false
+        },
+        {
+          "state": "Nebraska",
+          "n": 65,
+          "flagged": 2,
+          "rate": 0.03076923076923077,
+          "synthetic_only": false
+        },
+        {
+          "state": "Oklahoma",
+          "n": 68,
+          "flagged": 2,
+          "rate": 0.029411764705882353,
+          "synthetic_only": false
+        },
+        {
+          "state": "Texas",
+          "n": 346,
+          "flagged": 10,
+          "rate": 0.028901734104046242,
+          "synthetic_only": false
+        },
+        {
+          "state": "California",
+          "n": 357,
+          "flagged": 10,
+          "rate": 0.028011204481792718,
+          "synthetic_only": false
+        },
+        {
+          "state": "Oregon",
+          "n": 42,
+          "flagged": 1,
+          "rate": 0.023809523809523808,
+          "synthetic_only": false
+        },
+        {
+          "state": "Kentucky",
+          "n": 51,
+          "flagged": 1,
+          "rate": 0.0196078431372549,
+          "synthetic_only": false
+        },
+        {
+          "state": "Ohio",
+          "n": 54,
+          "flagged": 1,
+          "rate": 0.018518518518518517,
+          "synthetic_only": false
+        },
+        {
+          "state": "New York",
+          "n": 58,
+          "flagged": 1,
+          "rate": 0.017241379310344827,
+          "synthetic_only": false
+        }
+      ],
+      "top12_synthetic_only": 0
+    }
+  },
+  "agreement_test_real_rows": {
+    "n": 427,
+    "spearman_scores": 0.8204688526439778,
+    "flagged_real_only": 22,
+    "flagged_augmented": 19,
+    "flagged_both": 14,
+    "jaccard_flagged": 0.5185185185185185,
+    "top20_overlap": 15
+  },
+  "calendar_profile": {
+    "real_hour_min": 16,
+    "real_hour_max": 18,
+    "real_weekdays_present": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "real_night_rows": 0,
+    "real_weekend_rows": 0,
+    "synthetic_night_rows": 188,
+    "synthetic_weekend_rows": 214,
+    "synthetic_rows": 781,
+    "flagged_total": 108,
+    "flagged_synthetic": 57,
+    "flagged_night": 32,
+    "flagged_weekend": 38,
+    "flagged_night_or_weekend": 48,
+    "flagged_night_or_weekend_synthetic": 48
+  }
+}
